@@ -45,11 +45,13 @@ const HeroSection = () => {
                 <BlurIn delay={1}>
                   <Tooltip delayDuration={300}>
                     <TooltipTrigger asChild>
-                      <h1
+                      <div
                         className={cn(
                           "font-thin text-6xl text-transparent text-slate-800 ml-1 text-left",
                           "cursor-default text-edge-outline font-display sm:text-7xl md:text-9xl "
                         )}
+                        role="heading"
+                        aria-level="1"
                       >
                         {config.author.split(" ")[0]}
                         <br className="md:block hiidden" />
@@ -58,7 +60,7 @@ const HeroSection = () => {
 
                         <br className="md:block hiidden" />
                         UNMUTE ME 😢😢 */}
-                      </h1>
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent
                       side="top"
@@ -76,24 +78,23 @@ const HeroSection = () => {
                       "cursor-default font-display sm:text-xl md:text-xl whitespace-nowrap bg-clip-text "
                     )}
                   >
-                    A Full Stack Web Developer
+                    A FRONT END DEVELOPER
                   </p>
                 </BlurIn>
               </div>
               <div className="mt-8 md:ml-2 flex flex-col gap-3">
                 <Link
                   href={
-                    "https://drive.google.com/file/d/1O97WCk2DrO9x6SHOqf7LvRbmHkMgGIb4/view?usp=sharing"
+                    "#about"
                   }
-                  target="_blank"
                   className="flex-1"
                 >
                   <BoxReveal delay={2} width="100%" >
                     <Button className="flex items-center gap-2 w-full">
                       <File size={24} />
-                      <p>Resume</p>
+                      <p>About Me</p>
                     </Button>
-                  </BoxReveal>
+                   </BoxReveal>
                 </Link>
                 <div className="md:self-start flex gap-3">
                   <Tooltip delayDuration={300}>
@@ -103,7 +104,7 @@ const HeroSection = () => {
                           variant={"outline"}
                           className="block w-full overflow-hidden"
                         >
-                          Hire Me
+                          Contact me
                         </Button>
                       </Link>
                     </TooltipTrigger>

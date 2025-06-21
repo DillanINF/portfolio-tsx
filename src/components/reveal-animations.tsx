@@ -1,20 +1,19 @@
 "use client";
 
 import { motion, useAnimation, useInView } from "framer-motion";
+import { HTMLMotionProps } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import { ReactNode, useEffect, useRef } from "react";
 
-interface BlurIntProps {
+interface BlurIntProps extends HTMLMotionProps<"h1"> {
   children: ReactNode;
   className?: string;
+  variant?: any;
   delay?: number;
-  variant?: {
-    hidden: { filter: string; opacity: number };
-    visible: { filter: string; opacity: number };
-  };
   duration?: number;
 }
+
 export const BlurIn = ({
   children,
   className,
@@ -29,87 +28,66 @@ export const BlurIn = ({
   const combinedVariants = variant || defaultVariants;
 
   return (
-    <motion.h1
+    <motion.div
       initial="hidden"
       animate="visible"
       transition={{ duration, delay }}
       variants={combinedVariants}
       className={cn(
         className
-        // "font-display text-center text-4xl font-bold tracking-[-0.02em] drop-shadow-sm md:text-7xl md:leading-[5rem]"
       )}
     >
       {children}
-    </motion.h1>
+    </motion.div>
   );
 };
 
-interface BoxRevealProps {
-  children: JSX.Element;
+interface BoxRevealProps extends HTMLMotionProps<"div"> {
+  children: ReactNode;
   width?: "fit-content" | "100%";
   boxColor?: string;
   duration?: number;
   delay?: number;
-  once?: boolean;
 }
+
 export const BoxReveal = ({
   children,
   width = "fit-content",
   boxColor,
-  duration,
-  delay,
-  once = true,
+  duration = 0.5,
+  delay = 0,
 }: BoxRevealProps) => {
-  const mainControls = useAnimation();
-  const slideControls = useAnimation();
-
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once });
-
-  useEffect(() => {
-    if (isInView) {
-      slideControls.start("visible");
-      mainControls.start("visible");
-    } else {
-      slideControls.start("hidden");
-      mainControls.start("hidden");
-    }
-  }, [isInView, mainControls, slideControls]);
-
   return (
-    <div ref={ref} style={{ position: "relative", width, overflow: "hidden" }}>
+    <div className="relative overflow-hidden" style={{ width }}>
       <motion.div
         variants={{
-          hidden: { opacity: 0, y: 75 },
+          hidden: { opacity: 0, y: 20 },
           visible: { opacity: 1, y: 0 },
         }}
         initial="hidden"
-        animate={mainControls}
-        transition={{ duration: duration ? duration : 0.5, delay }}
+        animate="visible"
+        transition={{
+          duration,
+          delay,
+        }}
       >
         {children}
       </motion.div>
-
       <motion.div
         variants={{
-          hidden: { left: 0 },
+          hidden: { left: "0" },
           visible: { left: "100%" },
         }}
         initial="hidden"
-        animate={slideControls}
+        animate="visible"
         transition={{
-          duration: duration ? duration : 0.5,
-          ease: "easeIn",
-          delay,
+          duration,
+          delay: duration + delay,
+          ease: "easeOut",
         }}
+        className="absolute inset-0 z-20 bg-white/50"
         style={{
-          position: "absolute",
-          top: 4,
-          bottom: 4,
-          left: 0,
-          right: 0,
-          zIndex: 20,
-          background: boxColor ? boxColor : "#ffffff00",
+          backgroundColor: boxColor,
         }}
       />
     </div>

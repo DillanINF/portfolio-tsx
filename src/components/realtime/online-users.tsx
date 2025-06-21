@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -20,10 +20,15 @@ const OnlineUsers = () => {
   const { socket, users: _users, msgs } = useContext(SocketContext);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainer = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
   const users = Array.from(_users.values());
 
-  // i know i know this code sucks, WILL FIX LATER
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const containerScrollBottom = () => {
+    if (!mounted || !chatContainer.current) return;
     const t = setTimeout(() => {
       if (chatContainer.current) {
         chatContainer.current.scrollTop = chatContainer.current.scrollHeight;
@@ -31,7 +36,12 @@ const OnlineUsers = () => {
       clearTimeout(t);
     }, 1);
   };
-  useEffect(containerScrollBottom, [msgs]);
+
+  useEffect(() => {
+    if (mounted) {
+      containerScrollBottom();
+    }
+  }, [msgs, mounted]);
 
   const container = {
     hidden: { opacity: 0 },
@@ -53,11 +63,16 @@ const OnlineUsers = () => {
     });
   };
   const updateUsername = (newName: string) => {
+    if (!mounted) return;
     socket?.emit("username-change", {
       username: newName,
     });
-    localStorage.setItem("username", newName);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("username", newName);
+    }
   };
+
+  if (!mounted) return null;
 
   return (
     <Popover>

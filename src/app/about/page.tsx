@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { DiMongodb, DiNginx, DiNpm, DiPostgresql, DiVim } from "react-icons/di";
+import { config } from "@/data/config";
 import {
   FaAws,
   FaCss3,
@@ -39,30 +40,31 @@ import { VscCode } from "react-icons/vsc";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import { TbTerminal2 } from "react-icons/tb";
+import Link from "next/link";
 
 const CONTACT_LINKS = [
   {
     name: "Email",
-    content: "naresh.khatri2345@gmail",
-    href: "mailto:naresh.khatri2345@gmail.com",
+    content: "dilaninf6@gmail.com",
+    href: "mailto:dilaninf6@gmail.com",
     icon: <FaEnvelope height={"50px"} />,
   },
   {
-    name: "Phone",
-    content: "1234567890",
-    href: "tel:1234567890",
+    name: "WhatsApp",
+    content: "081386924636",
+    href: "https://wa.me/6281386924636",
     icon: <FaPhone height={"50px"} />,
   },
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/in/naresh-khatri/",
-    content: "/naresh-khatri",
+    href: config.social.linkedin,
+    content: config.social.linkedin.replace("https://www.linkedin.com/in/", "/"),
     icon: <FaLinkedin height={"50px"} />,
   },
   {
     name: "GitHub",
-    href: "https://github.com/Naresh-Khatri",
-    content: "/naresh-khatri",
+    href: config.social.github,
+    content: config.social.github.replace("https://github.com/", "/"),
     icon: <FaGithub height={"50px"} />,
   },
 ];
@@ -251,115 +253,109 @@ function Page() {
                 />
               </div>
               <div className="flex flex-col gap-3 lg:items-center ml-10 md:ml-20 lg:ml-0">
-                <p className="text-center text-xl">Naresh Khatri</p>
+                <p className="text-center text-xl">DILLAN ILKHAM NUR FAZRY</p>
                 <div className="text-xs bg-zinc-700 w-fit px-3 py-1 rounded-full">
-                  Web Developer
+                  FRONT END DEVELOPER
                 </div>
               </div>
             </div>
-            <div className="hidden lg:block">
-              <hr className="my-10 border-zinc-600" />
-              <ul className="flex flex-col gap-3">
-                {CONTACT_LINKS.map((link) => (
-                  <li key={link.name}>
-                    <a
-                      className="flex items-center px-3 gap-3 w-full h-12 border-zinc-700 bg-zinc-800 hover:border-zinc-600 border-[.5px] rounded-md "
-                      href={link.href}
-                    >
-                      <div className="w-8">{link.icon}</div>
-                      <div className="flex flex-col">
-                        <div className="text-sm">{link.name}</div>
-                        <div className="text-xs text-zinc-500">
-                          {link.content}
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+
+            <div className="grid gap-3 mt-10">
+              {CONTACT_LINKS.map((link) => (
+                <div className="flex gap-3 items-center" key={link.name}>
+                  <p>{link.icon}</p>
+                  <Link href={link.href} target="_blank">
+                    <p className="text-sm text-zinc-400 dark:hover:text-zinc-50 transition-colors duration-200">
+                      {link.content}
+                    </p>
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
         </aside>
-        <main className="basis-3/4 w-[500px]">
-          <div
-            className="p-10 border-[.5px] rounded-md border-zinc-600"
-            style={{ backdropFilter: "blur(2px)" }}
-          >
-            <h1 className="text-3xl mb-10 lg:md-20">About me</h1>
-            <p className="mb-10 text-roboto">
-              Hey there! I&apos;m Naresh, a Fullstack developer passionate about
-              creating meaningful digital experiences. With great in Web
-              development, I thrive on turning ideas into reality through coding
-              and design. My journey began with a fascination for technology and
-              a drive to make a positive impact.
-            </p>
-            <p className="mb-10">
-              When I&apos;m not coding, you can find me [Your
-              Interests/Hobbies], exploring new technologies, or sipping coffee
-              while brainstorming my next project.
-            </p>
-            <h1 className="text-3xl mb-10 lg:md-20">Stuff I use</h1>
-            <div className="mb-5">
-              {!toolsLoaded ? (
-                <p className="h-[100px]"></p>
-              ) : (
-                <Splide
-                  options={{
-                    type: "loop",
-                    interval: 2000,
-                    autoplay: true,
-                    pagination: false,
-                    speed: 2000,
-                    perPage: 5,
-                    perMove: 1,
-                    rewind: true,
-                    easing: "cubic-bezier(0.25, 1, 0.5, 1)",
-                    arrows: false,
-                  }}
-                  aria-label="My Favorite Images"
-                >
-                  {TOOLS.reverse().map((tool) => (
-                    <SplideSlide key={tool.name}>
-                      <div
-                        key={tool.name}
-                        className="w-fit p-2 border-[.5px] border-zinc-600 rounded-md"
-                      >
-                        {tool.icon}
-                      </div>
-                    </SplideSlide>
-                  ))}
-                </Splide>
-              )}
+        <main className="w-full lg:basis-3/4">
+          <div className="p-4 md:p-8 lg:p-10 rounded-2xl border-[.5px] border-zinc-600 bg-zinc-900 overflow-hidden">
+            <div className="flex justify-between items-center bg-zinc-800 p-2 rounded-t-lg">
+              <div className="flex gap-2">
+                <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+              </div>
+              <p className="text-sm text-zinc-400 font-mono">DILAN@terminal: ~</p>
+              <div></div>
             </div>
-            {/* <div className="">
-              <Splide
-                options={{
-                  type: "loop",
-                  interval: 2000,
-                  autoplay: true,
-                  pagination: false,
-                  speed: 3000,
-                  perPage: 5,
-                  perMove: 1,
-                  rewind: true,
-                  easing: "cubic-bezier(0.25, 1, 0.5, 1)",
-                  arrows: false,
-                }}
-                aria-label="My Favorite Images"
-              >
-                {TOOLS.map((tool) => (
-                  <SplideSlide key={tool.name}>
-                    <div
-                      key={tool.name}
-                      className="w-fit p-2 border-[.5px] border-zinc-600 rounded-md"
-                    >
-                      {tool.icon}
-                    </div>
-                  </SplideSlide>
-                ))}
-              </Splide>
-            </div> */}
+            <div className="p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap">
+              <p><span className="text-green-400">user@DILAN-PC</span>:<span className="text-blue-400">~</span>$ cat about_me.txt</p>
+              <p>Halo! Saya DILLAN ILKHAM NUR FAZRY.</p>
+              <p>Saya seorang siswa sekolah menengah yang antusias dengan pengembangan web front-end.</p>
+              <p>Saya suka belajar hal-hal baru di dunia teknologi dan menciptakan pengalaman web yang menarik.</p>
+              <p>Keterampilan saya meliputi HTML, CSS, JavaScript, dan framework seperti React dan Next.js.</p>
+              <p>Saya selalu mencari peluang untuk belajar dan berkontribusi pada proyek-proyek menarik.</p>
+              <p>Terima kasih sudah mengunjungi portofolio saya!</p>
+              <p><span className="text-green-400">user@DILAN-PC</span>:<span className="text-blue-400">~</span>$ _</p>
+            </div>
           </div>
+
+          <div
+            className="p-4 md:p-8 lg:p-10 rounded-2xl border-[.5px] border-zinc-600 mt-5"
+            style={{
+              backdropFilter: "blur(2px)",
+            }}
+          >
+            <h2 className="text-2xl font-bold mb-5">Skills</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {toolsLoaded &&
+                TOOLS.map((tool) => (
+                  <div
+                    key={tool.name}
+                    className="flex flex-col items-center justify-center p-4 rounded-xl bg-zinc-800 border-[.5px] border-zinc-700 aspect-square"
+                  >
+                    {tool.icon}
+                    <p className="mt-2 text-xs text-zinc-400">{tool.name}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div
+            className="p-4 md:p-8 lg:p-10 rounded-2xl border-[.5px] border-zinc-600 mt-5"
+            style={{
+              backdropFilter: "blur(2px)",
+            }}
+          >
+            <h2 className="text-2xl font-bold mb-5">Education</h2>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-semibold">Nama Sekolah Anda</p>
+                <p className="text-sm text-zinc-400">Tahun Mulai - Tahun Lulus</p>
+              </div>
+              <p className="text-zinc-400">Jurusan/Program Studi Anda</p>
+              <ul className="list-disc list-inside text-zinc-400 ml-4">
+                <li>Pencapaian atau mata pelajaran penting (opsional)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div
+            className="p-4 md:p-8 lg:p-10 rounded-2xl border-[.5px] border-zinc-600 mt-5"
+            style={{
+              backdropFilter: "blur(2px)",
+            }}
+          >
+            <h2 className="text-2xl font-bold mb-5">Experience</h2>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-semibold">Nama Perusahaan/Organisasi (jika ada magang/sukarela)</p>
+                <p className="text-sm text-zinc-400">Bulan Tahun Mulai - Bulan Tahun Selesai</p>
+              </div>
+              <p className="text-zinc-400">Posisi/Peran Anda</p>
+              <ul className="list-disc list-inside text-zinc-400 ml-4">
+                <li>Tanggung jawab atau pencapaian utama</li>
+              </ul>
+            </div>
+          </div>
+
         </main>
       </div>
     </div>

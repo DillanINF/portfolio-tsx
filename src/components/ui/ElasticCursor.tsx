@@ -115,9 +115,15 @@ function ElasticCursor() {
   }, [isHovering, isLoading]);
 
   const [cursorMoved, setCursorMoved] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Run on Mouse Move
   useLayoutEffect(() => {
-    if (isMobile) return;
+    if (!mounted || isMobile) return;
     // Caluclate Everything Function
     const setFromEvent = (e: MouseEvent) => {
       if (!jellyRef.current) return;
@@ -177,17 +183,17 @@ function ElasticCursor() {
     return () => {
       if (!isLoading) window.removeEventListener("mousemove", setFromEvent);
     };
-  }, [isLoading]);
+  }, [isLoading, mounted]);
 
   useEffect(() => {
-    if (!jellyRef.current) return;
-    jellyRef.current.style.height = "2rem"; // "8rem";
+    if (!mounted || !jellyRef.current) return;
+    jellyRef.current.style.height = "2rem";
     jellyRef.current.style.borderRadius = "1rem";
     jellyRef.current.style.width = loadingPercent * 2 + "vw";
-  }, [loadingPercent]);
+  }, [loadingPercent, mounted]);
 
-  useTicker(loop, isLoading || !cursorMoved || isMobile);
-  if (isMobile) return null;
+  useTicker(loop, isLoading || !cursorMoved || isMobile || !mounted);
+  if (isMobile || !mounted) return null;
   // Return UI
   return (
     <>

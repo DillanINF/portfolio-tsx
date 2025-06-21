@@ -3,7 +3,13 @@ import React from "react";
 function Page() {
   return (
     <div className="container mx-auto text-zinc-300 flex justify-center items-center h-full">
-      <h1 className="text-3xl">Oops no blog posts!</h1>
+      <div
+        className="text-3xl"
+        role="heading"
+        aria-level="1"
+      >
+        Oops no blog posts!
+      </div>
     </div>
   );
 }
