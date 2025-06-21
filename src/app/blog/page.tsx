@@ -6,7 +6,7 @@ function Page() {
       <div
         className="text-3xl"
         role="heading"
-        aria-level="1"
+        aria-level={1}
       >
         Oops no blog posts!
       </div>
