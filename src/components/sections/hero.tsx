@@ -51,7 +51,7 @@ const HeroSection = () => {
                           "cursor-default text-edge-outline font-display sm:text-7xl md:text-9xl "
                         )}
                         role="heading"
-                        aria-level="1"
+                        aria-level={1}
                       >
                         {config.author.split(" ")[0]}
                         <br className="md:block hiidden" />
