@@ -1,26 +1,146 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-orbitron);
+}
+
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Make Spline viewer background transparent - AGGRESSIVE MODE */
+spline-viewer {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  --spline-viewer-background: transparent !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+spline-viewer::before,
+spline-viewer::after {
+  display: none !important;
+}
+
+spline-viewer *,
+spline-viewer *::before,
+spline-viewer *::after {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+spline-viewer canvas {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+spline-viewer::part(canvas) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+spline-viewer > * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+spline-viewer #canvas3d {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+spline-viewer iframe {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Target all possible container elements */
+spline-viewer div,
+spline-viewer section,
+spline-viewer main,
+spline-viewer article {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Remove any box shadows that might look like backgrounds */
+spline-viewer,
+spline-viewer * {
+  box-shadow: none !important;
+}
+
+/* Additional aggressive techniques */
+spline-viewer {
+  isolation: isolate !important;
+}
+
+/* Force canvas to be transparent using blend modes */
+spline-viewer canvas {
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+}
+
+/* Hide any background layers */
+spline-viewer [style*="background"],
+spline-viewer [class*="background"],
+spline-viewer [id*="background"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  opacity: 0 !important;
+  display: none !important;
+}
+
+/* Futuristic button scan animation */
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-scan {
+  animation: scan 2s linear infinite;
+}
+
+/* Scan animation for navbar hover - runs once */
+@keyframes scan-once {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-scan-once {
+  animation: scan-once 0.6s ease-out;
 }
