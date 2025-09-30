@@ -5,15 +5,11 @@ A modern, futuristic portfolio website built with Next.js 14, TypeScript, and Ta
 ## 📸 Project Screenshots
 
 ### Hero Section
-![Hero Section](./screenshots/hero-section.png)
+![Hero Section](./screenshots/1.png)
 *Futuristic hero section with 3D robot model and animated navigation*
 
-### Interactive Features
-![Interactive Features](./screenshots/interactive-features.png)
-*Hover effects, animated buttons, and stats card*
-
 ### Full Page View
-![Full Page](./screenshots/full-page.png)
+![Full Page](./screenshots/2.png)
 *Complete portfolio layout with all sections*
 
 ## ✨ Features
