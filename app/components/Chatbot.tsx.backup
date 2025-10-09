@@ -12,6 +12,7 @@ interface Message {
   image?: string;
 }
 
+// Personal data - kept for reference (AI uses this from API route)
 const personalData = {
   name: 'Dillan Ilkham Nur Fazry',
   age: '17',
@@ -29,7 +30,8 @@ const personalData = {
   facebook: 'https://facebook.com/Dlaan'
 };
 
-const responses = {
+// All responses removed - AI handles everything now
+const responses_REMOVED = {
   greeting: [
     "Halo bro! Gw bot nya Dillan nih. Ada yang bisa gw bantu? 🤙",
     "Yo! Mau tau apa tentang Dillan? Tanya aja santai 😎",

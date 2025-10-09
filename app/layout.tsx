@@ -15,8 +15,8 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio - Full-stack Developer & UI/UX Designer",
-  description: "Portfolio website showcasing modern web development projects and skills",
+  title: "Portofolio - Pengembang Full-stack & Desainer UI/UX",
+  description: "Website portofolio yang menampilkan proyek dan keahlian pengembangan web modern",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="id">
       <body className={`${inter.variable} ${orbitron.variable} antialiased`}>
         <main>{children}</main>
       </body>

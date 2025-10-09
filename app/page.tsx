@@ -2,9 +2,15 @@
 
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import { Mail, Github, Linkedin, ExternalLink, ArrowRight } from 'lucide-react';
+import { 
+  SiHtml5, SiCss3, SiJavascript, SiReact, SiNextdotjs, SiLaravel, SiNodedotjs, SiMongodb, 
+  SiMysql, SiGit, SiFigma, SiTailwindcss, SiTypescript, SiXampp 
+} from 'react-icons/si';
+import { VscVscode } from 'react-icons/vsc';
 import { useState, useEffect, useRef } from 'react';
 import Spline from '@splinetool/react-spline';
 import Chatbot from './components/Chatbot';
+import GithubContributions from './components/GithubContributions';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
@@ -13,6 +19,23 @@ export default function Home() {
   // Render 3D only after first time hero is visible; keep mounted afterwards
   const [shouldRender3D, setShouldRender3D] = useState(false);
   const [showSection, setShowSection] = useState<string | null>(null);
+
+  // Restore section from URL hash on mount
+  useEffect(() => {
+    const hash = window.location.hash.slice(1); // Remove '#'
+    if (hash && ['about', 'skill', 'projects', 'contact'].includes(hash)) {
+      setShowSection(hash);
+    }
+  }, []);
+
+  // Update URL hash when section changes
+  useEffect(() => {
+    if (showSection) {
+      window.history.replaceState(null, '', `#${showSection}`);
+    } else {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, [showSection]);
 
   useEffect(() => {
     // Optimized: Run only once after load
@@ -59,48 +82,67 @@ export default function Home() {
 
   const projects = [
     {
-      title: 'E-Commerce Platform',
-      category: 'Web Development',
-      description: 'Modern e-commerce solution with seamless user experience and secure payment integration.',
+      title: 'Platform E-Commerce',
+      category: 'Pengembangan Web',
+      description: 'Solusi e-commerce modern dengan pengalaman pengguna mulus dan integrasi pembayaran yang aman.',
       tech: 'Next.js, TypeScript, Stripe',
       year: '2024'
     },
     {
-      title: 'Dashboard Analytics',
-      category: 'UI/UX Design',
-      description: 'Comprehensive analytics dashboard with interactive data visualization and real-time insights.',
+      title: 'Dashboard Analitik',
+      category: 'Desain UI/UX',
+      description: 'Dashboard analitik komprehensif dengan visualisasi data interaktif dan wawasan real-time.',
       tech: 'React, D3.js, Node.js',
       year: '2024'
     },
     {
-      title: 'Mobile Banking App',
-      category: 'Mobile Design',
-      description: 'Intuitive banking application focused on security and user-friendly financial management.',
+      title: 'Aplikasi Mobile Banking',
+      category: 'Desain Mobile',
+      description: 'Aplikasi perbankan intuitif yang fokus pada keamanan dan kemudahan pengelolaan keuangan.',
       tech: 'React Native, Firebase',
       year: '2023'
     },
     {
-      title: 'Brand Identity System',
+      title: 'Sistem Identitas Merek',
       category: 'Branding',
-      description: 'Complete brand identity and design system for a luxury fashion startup.',
+      description: 'Identitas merek lengkap dan sistem desain untuk startup fashion mewah.',
       tech: 'Figma, Adobe Creative Suite',
       year: '2023'
     },
     {
-      title: 'SaaS Landing Page',
-      category: 'Web Development',
-      description: 'High-converting landing page with optimized performance and modern animations.',
+      title: 'Landing Page SaaS',
+      category: 'Pengembangan Web',
+      description: 'Landing page dengan konversi tinggi, performa optimal, dan animasi modern.',
       tech: 'Next.js, Framer Motion',
       year: '2024'
     },
     {
-      title: 'Portfolio Website',
+      title: 'Website Portofolio',
       category: 'Full Stack',
-      description: 'Personal portfolio showcasing projects with elegant design and smooth interactions.',
+      description: 'Portofolio pribadi yang menampilkan proyek dengan desain elegan dan interaksi halus.',
       tech: 'Next.js, Tailwind CSS',
       year: '2024'
     }
   ];
+
+  // Ikon teknologi menggunakan react-icons (stabil, tidak tergantung CDN)
+  const techs = [
+    { name: 'HTML5', Icon: SiHtml5, color: '#E34F26' },
+    { name: 'CSS3', Icon: SiCss3, color: '#1572B6' },
+    { name: 'JavaScript', Icon: SiJavascript, color: '#F7DF1E' },
+    { name: 'React', Icon: SiReact, color: '#61DAFB' },
+    { name: 'Next.js', Icon: SiNextdotjs, color: '#000000' },
+    { name: 'Laravel', Icon: SiLaravel, color: '#FF2D20' },
+    { name: 'Node.js', Icon: SiNodedotjs, color: '#339933' },
+    { name: 'MongoDB', Icon: SiMongodb, color: '#47A248' },
+    { name: 'MySQL', Icon: SiMysql, color: '#4479A1' },
+    { name: 'Git', Icon: SiGit, color: '#F05032' },
+    { name: 'Figma', Icon: SiFigma, color: '#F24E1E' },
+    { name: 'VS Code', Icon: VscVscode, color: '#007ACC' },
+    { name: 'Tailwind CSS', Icon: SiTailwindcss, color: '#06B6D4' },
+    { name: 'TypeScript', Icon: SiTypescript, color: '#3178C6' },
+    { name: 'XAMPP', Icon: SiXampp, color: '#FB7A24' }
+  ] as const;
 
   return (
     <LazyMotion features={domAnimation} strict>
@@ -120,19 +162,23 @@ export default function Home() {
         {/* Navigation Links */}
         <div className="flex items-center gap-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
           <button onClick={() => setShowSection(null)} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
-            Home
+            Beranda
             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
           </button>
           <button onClick={() => setShowSection('about')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
-            About
+            Tentang
+            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
+          </button>
+          <button onClick={() => setShowSection('skill')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
+            Keahlian
             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
           </button>
           <button onClick={() => setShowSection('projects')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
-            Projects
+            Proyek
             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
           </button>
           <button onClick={() => setShowSection('contact')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
-            Contact
+            Kontak
             <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
           </button>
         </div>
@@ -184,10 +230,10 @@ export default function Home() {
               className="max-w-lg pointer-events-auto"
             >
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 tracking-tight leading-tight drop-shadow-sm" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                Web Developer
+                Pengembang Web
               </h1>
               <p className="text-sm md:text-base text-gray-700 mb-5 leading-relaxed max-w-sm drop-shadow-sm">
-                17-year-old web developer from Bekasi, Indonesia. Student at SMK Telekomunikasi Telesandi Bekasi, passionate about crafting innovative digital solutions and modern web experiences.
+                Pengembang web berusia 17 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
               </p>
               <m.button
                 onClick={() => setShowSection('projects')}
@@ -211,7 +257,7 @@ export default function Home() {
                 
                 {/* Button content - unskew text */}
                 <span className="relative z-10 flex items-center gap-2" style={{ transform: 'skewX(10deg)' }}>
-                  View My Work
+                  Lihat Karya Saya
                   <ArrowRight className="w-4 h-4" />
                 </span>
               </m.button>
@@ -230,12 +276,12 @@ export default function Home() {
             <div className="flex items-center gap-6">
               <div className="text-center">
                 <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>1+</p>
-                <p className="text-xs text-gray-600 uppercase tracking-wider">Years Coding</p>
+                <p className="text-xs text-gray-600 uppercase tracking-wider">Tahun Coding</p>
               </div>
               <div className="w-px h-10 bg-gray-300"></div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>5+</p>
-                <p className="text-xs text-gray-600 uppercase tracking-wider">Projects</p>
+                <p className="text-xs text-gray-600 uppercase tracking-wider">Proyek</p>
               </div>
               <div className="w-px h-10 bg-gray-300"></div>
               <div className="text-center">
@@ -270,13 +316,13 @@ export default function Home() {
               className="text-center mb-16"
             >
               <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                About Me
+                Tentang Saya
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto"></div>
             </m.div>
 
             {/* Main Content Grid */}
-            <div className="grid lg:grid-cols-2 gap-16 items-start mb-20">
+            <div className="grid lg:grid-cols-2 gap-16 items-start">
               {/* Left: Profile Info */}
               <m.div
                 initial={{ opacity: 0, x: -30 }}
@@ -287,133 +333,206 @@ export default function Home() {
                 {/* Introduction */}
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                    Web Developer
+                    Pengembang Web
                   </h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    I'm Dillan Ilkham Nur Fazry, a 17-year-old web developer from Bekasi, Indonesia. 
-                    Currently studying at SMK Telekomunikasi Telesandi Bekasi, I specialize in creating 
-                    modern web applications with clean, efficient code.
+                    Saya Dillan Ilkham Nur Fazry, pengembang web berusia 17 tahun dari Bekasi, Indonesia. 
+                    Saat ini belajar di SMK Telekomunikasi Telesandi Bekasi, saya fokus membuat 
+                    aplikasi web modern dengan kode yang bersih dan efisien.
                   </p>
                   <p className="text-gray-600 leading-relaxed">
-                    My focus is on building user-friendly interfaces and robust backend systems 
-                    that solve real-world problems through technology.
+                    Fokus saya membangun antarmuka ramah pengguna dan sistem backend yang kuat 
+                    untuk menyelesaikan masalah nyata melalui teknologi.
                   </p>
                 </div>
 
                 {/* Personal Info */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Location</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">Lokasi</h4>
                     <p className="text-gray-600">Bekasi, Indonesia</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Age</h4>
-                    <p className="text-gray-600">17 Years</p>
+                    <h4 className="font-semibold text-gray-900 mb-2">Usia</h4>
+                    <p className="text-gray-600">17 Tahun</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Education</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">Pendidikan</h4>
                     <p className="text-gray-600">SMK Telesandi Bekasi</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Experience</h4>
-                    <p className="text-gray-600">1+ Years</p>
+                    <h4 className="font-semibold text-gray-900 mb-2">Pengalaman</h4>
+                    <p className="text-gray-600">1+ Tahun</p>
                   </div>
                 </div>
               </m.div>
 
-              {/* Right: Skills & Expertise */}
+              {/* Right: Goals & Interests */}
               <m.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="space-y-8"
               >
-                {/* Skills */}
+                {/* Goals */}
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                    Skills & Expertise
+                    Tujuan Saat Ini
                   </h3>
-                  <div className="space-y-4">
-                    {[
-                      { skill: 'Frontend Development', level: 90 },
-                      { skill: 'Backend Development', level: 75 },
-                      { skill: 'UI/UX Design', level: 80 },
-                      { skill: 'Database Management', level: 70 }
-                    ].map((item, index) => (
-                      <div key={item.skill}>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium text-gray-900">{item.skill}</span>
-                          <span className="text-sm text-gray-600">{item.level}%</span>
-                        </div>
-                        <div className="w-full bg-gray-300 rounded-full h-2">
-                          <m.div
-                            className="bg-gray-900 h-2 rounded-full"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${item.level}%` }}
-                            transition={{ duration: 1, delay: 0.6 + index * 0.1, ease: "easeOut" }}
-                          />
-                        </div>
-                      </div>
+                  <ul className="space-y-3 text-gray-600">
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
+                      <span>Menguasai pengembangan full-stack</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
+                      <span>Membangun aplikasi web yang berdampak</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
+                      <span>Berkontribusi ke proyek open source</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
+                      <span>Mempelajari teknologi dan framework baru</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Interests */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Minat</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {['Pengembangan Web', 'Desain UI/UX', 'Aplikasi Mobile', 'Komputasi Awan', 'AI & ML'].map((interest, i) => (
+                      <span key={i} className="px-4 py-2 bg-white rounded-lg text-sm font-medium text-gray-700 shadow-sm">
+                        {interest}
+                      </span>
                     ))}
                   </div>
                 </div>
 
-                {/* Goals */}
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Current Goals</h4>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Master full-stack development</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Build impactful web applications</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Contribute to open source projects</span>
-                    </li>
-                  </ul>
+                {/* Philosophy */}
+                <div className="bg-white p-6 rounded-lg shadow-sm">
+                  <h4 className="font-semibold text-gray-900 mb-3">Filosofi Saya</h4>
+                  <p className="text-gray-600 italic leading-relaxed">
+                    "Kode bukan hanya tentang membuat sesuatu bekerja, tetapi menciptakan solusi elegan 
+                    yang memberi dampak pada kehidupan banyak orang."
+                  </p>
                 </div>
               </m.div>
             </div>
+          </div>
+        </section>
+      )}
+
+      {showSection === 'skill' && (
+        <section className="min-h-screen flex items-center justify-center px-6 bg-gray-200 py-20 relative">
+          {/* Subtle Grid Background */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `
+                linear-gradient(to right, #374151 1px, transparent 1px),
+                linear-gradient(to bottom, #374151 1px, transparent 1px)
+              `,
+              backgroundSize: '40px 40px'
+            }}></div>
+          </div>
+          <div className="max-w-6xl mx-auto w-full relative z-10">
+            {/* Header */}
+            <m.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                Keahlian & Keunggulan
+              </h2>
+              <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Gambaran ringkas tentang keahlian teknis dan teknologi yang saya gunakan.
+              </p>
+            </m.div>
+
+            {/* Skills Progress Bars */}
+            <m.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="mb-20"
+            >
+              <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                Kompetensi Inti
+              </h3>
+              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {[
+                  { skill: 'Pengembangan Frontend', level: 90 },
+                  { skill: 'Pengembangan Backend', level: 75 },
+                  { skill: 'Desain UI/UX', level: 80 },
+                  { skill: 'Manajemen Basis Data', level: 70 },
+                  { skill: 'Pengembangan API', level: 85 },
+                  { skill: 'Version Control (Git)', level: 88 }
+                ].map((item, index) => (
+                  <div key={item.skill}>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium text-gray-900">{item.skill}</span>
+                      <span className="text-sm text-gray-600">{item.level}%</span>
+                    </div>
+                    <div className="w-full bg-gray-300 rounded-full h-2.5">
+                      <m.div
+                        className="bg-gray-900 h-2.5 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.level}%` }}
+                        transition={{ duration: 1, delay: 0.4 + index * 0.1, ease: "easeOut" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </m.div>
 
             {/* Technologies */}
             <m.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-center"
+              className="text-center mb-20"
             >
               <h3 className="text-2xl font-bold text-gray-900 mb-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                Technologies I Work With
+                Teknologi yang Saya Gunakan
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-                {[
-                  { name: 'HTML5', icon: '🌐' },
-                  { name: 'CSS3', icon: '🎨' },
-                  { name: 'JavaScript', icon: '⚡' },
-                  { name: 'React', icon: '⚛️' },
-                  { name: 'Laravel', icon: '🚀' },
-                  { name: 'Node.js', icon: '🟢' },
-                  { name: 'MongoDB', icon: '🍃' },
-                  { name: 'Git', icon: '📝' },
-                  { name: 'Figma', icon: '🎯' },
-                  { name: 'VS Code', icon: '💻' }
-                ].map((tech, index) => (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                {techs.map((tech, index) => (
                   <m.div
                     key={tech.name}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.8 + index * 0.05 }}
+                    transition={{ duration: 0.5, delay: 0.8 + index * 0.03 }}
                     className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
                   >
-                    <div className="text-2xl mb-2">{tech.icon}</div>
+                    <div className="h-8 w-8 mb-2 flex items-center justify-center">
+                      {(() => {
+                        const IconComp = (tech as any).Icon;
+                        return IconComp ? (
+                          <IconComp color={tech.color} size={32} />
+                        ) : (
+                          <span className="text-sm font-semibold">{tech.name[0]}</span>
+                        );
+                      })()}
+                    </div>
                     <span className="text-sm font-medium text-gray-700">{tech.name}</span>
                   </m.div>
                 ))}
               </div>
+            </m.div>
+
+            {/* GitHub Contributions */}
+            <m.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              <GithubContributions />
             </m.div>
           </div>
         </section>
@@ -441,12 +560,12 @@ export default function Home() {
               className="text-center mb-16"
             >
               <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                My Projects
+                Proyek Saya
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                A collection of projects that showcase my skills in web development, 
-                from frontend interfaces to full-stack applications.
+                Kumpulan proyek yang menampilkan kemampuan saya dalam pengembangan web,
+                mulai dari antarmuka frontend hingga aplikasi full-stack.
               </p>
             </m.div>
 
@@ -477,7 +596,7 @@ export default function Home() {
 
                   {/* Tech Stack */}
                   <div className="p-6">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3">Technologies</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-3">Teknologi</h4>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {project.tech.split(', ').map((tech, i) => (
                         <span 
@@ -491,7 +610,7 @@ export default function Home() {
                     
                     {/* Action Button */}
                     <button className="w-full py-2 text-sm font-medium text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2">
-                      View Project
+                      Lihat Proyek
                       <ExternalLink className="w-4 h-4" />
                     </button>
                   </div>
@@ -524,12 +643,12 @@ export default function Home() {
               className="text-center mb-16"
             >
               <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                Get In Touch
+                Hubungi Saya
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Have a project in mind or want to collaborate? I'd love to hear from you. 
-                Let's create something amazing together.
+                Punya ide proyek atau ingin berkolaborasi? Saya senang mendengarnya.
+                Mari ciptakan sesuatu yang luar biasa bersama.
               </p>
             </m.div>
 
@@ -543,11 +662,11 @@ export default function Home() {
               >
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                    Let's Connect
+                    Mari Terhubung
                   </h3>
                   <p className="text-gray-600 leading-relaxed mb-8">
-                    I'm always open to discussing new opportunities, creative projects, 
-                    or just having a friendly chat about web development and technology.
+                    Saya selalu terbuka untuk berdiskusi tentang peluang baru, proyek kreatif,
+                    atau sekadar mengobrol santai seputar pengembangan web dan teknologi.
                   </p>
                 </div>
 
@@ -590,7 +709,7 @@ export default function Home() {
 
                 {/* Social Links */}
                 <div className="pt-6 border-t border-gray-300">
-                  <h4 className="font-semibold text-gray-900 mb-4">Follow Me</h4>
+                  <h4 className="font-semibold text-gray-900 mb-4">Ikuti Saya</h4>
                   <div className="flex gap-4">
                     {[
                       { icon: <Github className="w-5 h-5" />, href: 'https://github.com/DillanINF', label: 'GitHub' },
@@ -619,17 +738,17 @@ export default function Home() {
                 className="bg-white rounded-lg shadow-sm p-8"
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                  Send Message
+                  Kirim Pesan
                 </h3>
                 
                 <form className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Nama</label>
                       <input
                         type="text"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200"
-                        placeholder="Your full name"
+                        placeholder="Nama lengkap Anda"
                       />
                     </div>
                     <div>
@@ -637,26 +756,26 @@ export default function Home() {
                       <input
                         type="email"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200"
-                        placeholder="your@email.com"
+                        placeholder="email@anda.com"
                       />
                     </div>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Subject</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Subjek</label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200"
-                      placeholder="Project inquiry"
+                      placeholder="Permintaan proyek"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Pesan</label>
                     <textarea
                       rows={5}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200 resize-none"
-                      placeholder="Tell me about your project..."
+                      placeholder="Ceritakan tentang proyek Anda..."
                     />
                   </div>
                   
@@ -665,7 +784,7 @@ export default function Home() {
                     className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors duration-200"
                     style={{ fontFamily: 'var(--font-orbitron)' }}
                   >
-                    Send Message
+                    Kirim Pesan
                   </button>
                 </form>
               </m.div>
@@ -695,11 +814,11 @@ export default function Home() {
                 Dillan Ilkham
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Web Developer passionate about creating modern, efficient, and user-friendly digital solutions.
+                Pengembang Web yang bersemangat menciptakan solusi digital modern, efisien, dan ramah pengguna.
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Available for new projects</span>
+                <span className="text-gray-700">Tersedia untuk proyek baru</span>
               </div>
             </m.div>
 
@@ -709,13 +828,14 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <h4 className="font-semibold text-gray-900 mb-4">Quick Links</h4>
+              <h4 className="font-semibold text-gray-900 mb-4">Tautan Cepat</h4>
               <div className="space-y-2">
                 {[
-                  { name: 'Home', action: () => setShowSection(null) },
-                  { name: 'About', action: () => setShowSection('about') },
-                  { name: 'Projects', action: () => setShowSection('projects') },
-                  { name: 'Contact', action: () => setShowSection('contact') }
+                  { name: 'Beranda', action: () => setShowSection(null) },
+                  { name: 'Tentang', action: () => setShowSection('about') },
+                  { name: 'Keahlian', action: () => setShowSection('skill') },
+                  { name: 'Proyek', action: () => setShowSection('projects') },
+                  { name: 'Kontak', action: () => setShowSection('contact') }
                 ].map((link, index) => (
                   <button
                     key={index}
@@ -734,7 +854,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h4 className="font-semibold text-gray-900 mb-4">Get In Touch</h4>
+              <h4 className="font-semibold text-gray-900 mb-4">Hubungi Saya</h4>
               <div className="space-y-2 text-sm text-gray-600">
                 <p>dilaninf6@gmail.com</p>
                 <p>Bekasi, Indonesia</p>
@@ -768,10 +888,10 @@ export default function Home() {
             className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4"
           >
             <div className="text-sm text-gray-600">
-              © 2024 Dillan Ilkham Nur Fazry. All rights reserved.
+              © 2024 Dillan Ilkham Nur Fazry. Hak cipta dilindungi.
             </div>
             <div className="text-sm text-gray-500">
-              Built with Next.js & Tailwind CSS
+              Dibangun dengan Next.js & Tailwind CSS
             </div>
           </m.div>
         </div>
