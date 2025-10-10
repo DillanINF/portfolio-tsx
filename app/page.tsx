@@ -49,7 +49,31 @@ export default function Home() {
       const form = contactFormRef.current;
       if (!form) throw new Error('Form tidak ditemukan');
 
-      // Gunakan sendForm agar EmailJS otomatis membaca field by name
+      // Ambil data form
+      const formData = new FormData(form);
+      const contactData = {
+        name: formData.get('user_name') as string,
+        email: formData.get('user_email') as string,
+        subject: formData.get('subject') as string,
+        message: formData.get('message') as string,
+      };
+
+      // 1. Simpan data pengirim ke log terlebih dahulu
+      try {
+        await fetch('/api/contact-log', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(contactData),
+        });
+        console.log('✅ Data pengirim berhasil disimpan');
+      } catch (logError) {
+        console.warn('⚠️ Gagal menyimpan log, tetap lanjut kirim email:', logError);
+        // Tidak throw error, tetap lanjut kirim email
+      }
+
+      // 2. Kirim email via EmailJS
       await emailjs.sendForm(
         SERVICE_ID,
         TEMPLATE_ID,

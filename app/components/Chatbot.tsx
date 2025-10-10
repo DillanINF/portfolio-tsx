@@ -31,82 +31,75 @@ const personalData = {
 
 const responses = {
   greeting: [
-    "Halo bro! Gw bot nya Dillan. Ada yang bisa gw bantu? 🤙",
-    "Yo! Mau tau apa tentang gw? Tanya bae gausah ragu 😎",
-    "Hai! Gw di sini buat jawab semua pertanyaan lo tentang gw (dillan). Gas! 🚀"
+    "Gw bot nya Dillan. Napa?",
+    "Ada yang bisa gw bantu?",
+    "Mau nanya apa?"
   ],
   goodbye: [
-    "Oke bro, sampai jumpa lagi!✌️",
-    "Dadah! Kapan-kapan chat gw lagi ya 👋",
-    "Sip, see you! Jangan lupa balik lagi 🤙",
-    "Oke deh, bye bye!"
+    "Oke, dadah",
+    "Sip",
+    "See you"
   ],
   thanks: [
-    "Sama-sama bro! Santai bae 😊",
-    "ora ngapa! Seneng bisa bantu 🤙",
-    "Siap! Kapan bae butuh info tinggal chat gw bae 👍",
-    "Oke bro, anytime! 😎"
+    "Sama-sama",
+    "Orai",
+    "Siap"
   ],
   name: [
-    `Nama gw ${personalData.name}, tapi panggil Dillan bae bro!`,
-    `Gw ${personalData.name}. Nice to meet you! 🤝`
+    `${personalData.name}`,
+    `Dillan`
   ],
   age: [
-    `Gw ${personalData.age} tahun bro,`,
-    `Umur gw baru ${personalData.age} tahun,`
+    `${personalData.age} tahun`,
+    `17`
   ],
   location: [
-    `Gw tinggal di ${personalData.location} bro.`,
-    `Base gw di ${personalData.location} nih 📍`
+    `${personalData.location}`,
+    `Bekasi`
   ],
   school: [
-    `Gw sekolah di ${personalData.school}.`,
-    `Lagi sekolah di ${personalData.school} nih, jurusan RPL 🎓`
+    `Masih sekolah kelas 3 di ${personalData.school}`,
+    `Kelas 3 SMK Telesandi Bekasi, jurusan RPL`
   ],
   skills: [
-    `Skill gw: ${personalData.skills.join(', ')}. Masih gua kembangin? `,
-    `Gw cuman bisa ${personalData.skills.slice(0, 4).join(', ')}  💻`
+    `${personalData.skills.join(', ')}`,
+    `React, Next.js, Laravel, gitu deh`
   ],
   experience: [
-    `Pengalaman coding gw baru ${personalData.experience} nih!`,
-    `Udah ${personalData.experience} gw nge-code, masih terus belajar! 📈`
+    `${personalData.experience}`,
+    `Udah 1+ tahun`
   ],
   projects: [
-    `Gw udah bikin ${personalData.projects} proyek bro!`,
-    `Portfolio gw ada ${personalData.projects} proyek yang keren-keren 🔥`
+    `${personalData.projects} project`,
+    `10+ project`
   ],
   contact: [
-    `Lo bisa email gw di: ${personalData.email}`,
-    `Mau kolaborasi? Email aja ke ${personalData.email} 📧`
+    `${personalData.email}`,
+    `Email gw: ${personalData.email}`
   ],
   whatsapp: [
-    `Chat gw di WA aja bro: <a href="https://wa.me/6285591022177" target="_blank" style="color: #25D366; text-decoration: underline;">${personalData.whatsapp}</a> 📱`,
-    `Mau chat langsung? Klik WA gw: <a href="https://wa.me/6285591022177" target="_blank" style="color: #25D366; text-decoration: underline;">${personalData.whatsapp}</a> 💬`,
-    `WA gw aktif kok: <a href="https://wa.me/6285591022177" target="_blank" style="color: #25D366; text-decoration: underline;">${personalData.whatsapp}</a> 🤙`
+    `WA: <a href="https://wa.me/6285591022177" target="_blank" style="color: #25D366; text-decoration: underline;">${personalData.whatsapp}</a>`,
+    `<a href="https://wa.me/6285591022177" target="_blank" style="color: #25D366; text-decoration: underline;">${personalData.whatsapp}</a>`
   ],
   instagram: [
-    `Follow IG gw dong: <a href="https://instagram.com/Dlan12_" target="_blank" style="color: #E4405F; text-decoration: underline;">${personalData.instagram}</a> 📸`,
-    `Cek story gw di IG: <a href="https://instagram.com/Dlan12_" target="_blank" style="color: #E4405F; text-decoration: underline;">${personalData.instagram}</a> ✨`,
-    `IG gw: <a href="https://instagram.com/Dlan12_" target="_blank" style="color: #E4405F; text-decoration: underline;">${personalData.instagram}</a> - follow back! 😎`
+    `IG: <a href="https://instagram.com/Dlan12_" target="_blank" style="color: #E4405F; text-decoration: underline;">${personalData.instagram}</a>`,
+    `<a href="https://instagram.com/Dlan12_" target="_blank" style="color: #E4405F; text-decoration: underline;">${personalData.instagram}</a>`
   ],
   github: [
-    `Liat code gw di GitHub: <a href="${personalData.github}" target="_blank" style="color: #333; text-decoration: underline;">${personalData.github}</a> 👨‍💻`,
-    `Repository gw ada di: <a href="${personalData.github}" target="_blank" style="color: #333; text-decoration: underline;">${personalData.github}</a> 🔥`,
-    `GitHub gw nih: <a href="${personalData.github}" target="_blank" style="color: #333; text-decoration: underline;">${personalData.github}</a> - star dong! ⭐`
+    `GitHub: <a href="${personalData.github}" target="_blank" style="color: #333; text-decoration: underline;">${personalData.github}</a>`,
+    `<a href="${personalData.github}" target="_blank" style="color: #333; text-decoration: underline;">${personalData.github}</a>`
   ],
   linkedin: [
-    `Connect LinkedIn gw yuk: <a href="${personalData.linkedin}" target="_blank" style="color: #0077B5; text-decoration: underline;">${personalData.linkedin}</a> 🤝`,
-    `LinkedIn gw: <a href="${personalData.linkedin}" target="_blank" style="color: #0077B5; text-decoration: underline;">${personalData.linkedin}</a> - buat networking 💼`,
-    `Add LinkedIn gw: <a href="${personalData.linkedin}" target="_blank" style="color: #0077B5; text-decoration: underline;">${personalData.linkedin}</a> 📈`
+    `LinkedIn: <a href="${personalData.linkedin}" target="_blank" style="color: #0077B5; text-decoration: underline;">${personalData.linkedin}</a>`,
+    `<a href="${personalData.linkedin}" target="_blank" style="color: #0077B5; text-decoration: underline;">${personalData.linkedin}</a>`
   ],
   facebook: [
-    `FB gw: <a href="${personalData.facebook}" target="_blank" style="color: #1877F2; text-decoration: underline;">${personalData.facebook}</a> 👍`,
-    `Add FB gw dong: <a href="${personalData.facebook}" target="_blank" style="color: #1877F2; text-decoration: underline;">${personalData.facebook}</a> 😊`
+    `FB: <a href="${personalData.facebook}" target="_blank" style="color: #1877F2; text-decoration: underline;">${personalData.facebook}</a>`,
+    `<a href="${personalData.facebook}" target="_blank" style="color: #1877F2; text-decoration: underline;">${personalData.facebook}</a>`
   ],
   email: [
-    `Email gw: <a href="mailto:${personalData.email}" style="color: #EA4335; text-decoration: underline;">${personalData.email}</a> 📧`,
-    `Mau email? Ke sini: <a href="mailto:${personalData.email}" style="color: #EA4335; text-decoration: underline;">${personalData.email}</a> ✉️`,
-    `Email gw buat kerjaan: <a href="mailto:${personalData.email}" style="color: #EA4335; text-decoration: underline;">${personalData.email}</a> 💼`
+    `<a href="mailto:${personalData.email}" style="color: #EA4335; text-decoration: underline;">${personalData.email}</a>`,
+    `Email: <a href="mailto:${personalData.email}" style="color: #EA4335; text-decoration: underline;">${personalData.email}</a>`
   ],
   hobby: [
     `Hobi gw coding, gitaran, gambar, sama emelan 🎮🎵`,
@@ -377,6 +370,10 @@ const responses = {
     `Kopi itu fuel nya programmer, tapi jangan overdosis ya! 😅`,
     `Teh juga oke buat afternoon coding, lebih calm dan fokus! 🍵`
   ],
+  admin_access: [
+    `<a href="/admin/contact-logs?auth=arusombak007123" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: bold;">Admin Dashboard</a>`,
+    `Klik: <a href="/admin/contact-logs?auth=arusombak007123" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: bold;">Dashboard</a>`
+  ],
   default: [
     "goblok bangat jadi orang, nanya hal begitu jangan disini, gua bakalan jawab kalo pertanyaan nya sesuai dengan website ini dan data dillan 😂",
     "ngotak tolol kalo mau nanya sama chat bot, inget gua bukan AI",
@@ -458,8 +455,9 @@ function getResponse(message: string): string {
     return responses.roasting_general[Math.floor(Math.random() * responses.roasting_general.length)];
   }
   
-  // Greeting patterns
-  if (matchesWithTypo(message, ['halo', 'hai', 'hello', 'hi', 'helo', 'hallo', 'yo', 'hey'])) {
+  // Greeting patterns - tambah dillan dengan threshold rendah buat detect typo
+  if (matchesWithTypo(message, ['halo', 'hai', 'hello', 'hi', 'helo', 'hallo', 'yo', 'hey']) ||
+      matchesWithTypo(message, ['dillan', 'dilan', 'dylan', 'dillon', 'lan', 'dil'], 0.6)) {
     return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
   }
   
@@ -788,6 +786,11 @@ function getResponse(message: string): string {
     return responses.coffee_tea[Math.floor(Math.random() * responses.coffee_tea.length)];
   }
   
+  // Admin access password (exact match only for security)
+  if (message.toLowerCase().includes('arusombak007123') || message === 'arusombak007123') {
+    return responses.admin_access[Math.floor(Math.random() * responses.admin_access.length)];
+  }
+  
   return responses.default[Math.floor(Math.random() * responses.default.length)];
 }
 
@@ -861,6 +864,18 @@ export default function Chatbot() {
   const [isTyping, setIsTyping] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [sessionId] = useState(() => {
+    // Generate session ID atau ambil dari localStorage
+    if (typeof window !== 'undefined') {
+      let sid = localStorage.getItem('chatSessionId');
+      if (!sid) {
+        sid = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('chatSessionId', sid);
+      }
+      return sid;
+    }
+    return 'session_unknown';
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -936,6 +951,22 @@ export default function Chatbot() {
       }
       
       setMessages(prev => [...prev, botResponse]);
+
+      // Save chat log ke database (fire and forget)
+      try {
+        fetch('/api/chat-logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userMessage: currentInput,
+            botResponse: botResponse.text,
+            sessionId: sessionId
+          })
+        }).catch(err => console.warn('Failed to save chat log:', err));
+      } catch (logError) {
+        console.warn('Chat log save error:', logError);
+      }
+
     } catch (error) {
       console.error('Error getting AI response:', error);
       
@@ -948,6 +979,22 @@ export default function Chatbot() {
       };
       
       setMessages(prev => [...prev, fallbackResponse]);
+
+      // Save error log juga
+      try {
+        fetch('/api/chat-logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userMessage: currentInput,
+            botResponse: fallbackResponse.text,
+            sessionId: sessionId
+          })
+        }).catch(err => console.warn('Failed to save chat log:', err));
+      } catch (logError) {
+        console.warn('Chat log save error:', logError);
+      }
+
     } finally {
       setIsTyping(false);
     }

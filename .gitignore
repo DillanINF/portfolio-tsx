@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# contact logs data (sensitive)
+/data
+data/contact-logs.json
+data/chat-logs.json
