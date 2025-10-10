@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test EmailJS</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #111827;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #374151;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .info {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4f46e5;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #4f46e5;
+        }
+        .info code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test EmailJS Connection</h1>
+        
+        <div class="info">
+            <h3>Kredensial Saat Ini:</h3>
+            <p><strong>Service ID:</strong> <code>service_nj947y5</code></p>
+            <p><strong>Template ID:</strong> <code>template_k28jkce</code></p>
+            <p><strong>Public Key:</strong> <code>Z7mhNLfOSIFuaF2Z6</code></p>
+            <p style="margin-top: 15px; color: #6b7280; font-size: 14px;">
+                ⚠️ Buka Console (F12) untuk melihat log detail pengiriman
+            </p>
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="user_name">Nama:</label>
+                <input type="text" id="user_name" name="user_name" required value="Test User">
+            </div>
+
+            <div class="form-group">
+                <label for="user_email">Email:</label>
+                <input type="email" id="user_email" name="user_email" required value="test@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subjek:</label>
+                <input type="text" id="subject" name="subject" required value="Test EmailJS Integration">
+            </div>
+
+            <div class="form-group">
+                <label for="message">Pesan:</label>
+                <textarea id="message" name="message" rows="5" required>Ini adalah pesan test untuk memverifikasi integrasi EmailJS.</textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">Kirim Test Email</button>
+        </form>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        // Initialize EmailJS
+        const SERVICE_ID = 'service_nj947y5';
+        const TEMPLATE_ID = 'template_k28jkce';
+        const PUBLIC_KEY = 'Z7mhNLfOSIFuaF2Z6';
+
+        console.log('🔧 Initializing EmailJS...');
+        console.log('Service ID:', SERVICE_ID);
+        console.log('Template ID:', TEMPLATE_ID);
+        console.log('Public Key:', PUBLIC_KEY);
+
+        try {
+            emailjs.init({ publicKey: PUBLIC_KEY });
+            console.log('✅ EmailJS initialized successfully');
+        } catch (e) {
+            console.error('❌ EmailJS initialization failed:', e);
+        }
+
+        // Form submission
+        const form = document.getElementById('testForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusDiv = document.getElementById('status');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            console.log('📧 Starting email send...');
+            
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Mengirim...';
+            statusDiv.style.display = 'none';
+
+            try {
+                console.log('📤 Sending form data:', {
+                    user_name: form.user_name.value,
+                    user_email: form.user_email.value,
+                    subject: form.subject.value,
+                    message: form.message.value
+                });
+
+                const response = await emailjs.sendForm(
+                    SERVICE_ID,
+                    TEMPLATE_ID,
+                    form,
+                    { publicKey: PUBLIC_KEY }
+                );
+
+                console.log('✅ Email sent successfully!', response);
+                
+                // Show success message
+                statusDiv.className = 'status success';
+                statusDiv.style.display = 'block';
+                statusDiv.innerHTML = `
+                    <strong>✅ Berhasil!</strong><br>
+                    Email telah terkirim ke <strong>dilaninf6@gmail.com</strong><br>
+                    <small>Status: ${response.status} | Text: ${response.text}</small><br>
+                    <small style="margin-top: 10px; display: block;">
+                        Cek inbox dan folder spam email Anda!
+                    </small>
+                `;
+
+                // Reset form
+                form.reset();
+
+            } catch (error) {
+                console.error('❌ Email send failed:', error);
+                console.error('Error details:', {
+                    text: error.text,
+                    status: error.status,
+                    message: error.message,
+                    fullError: error
+                });
+
+                // Show error message
+                statusDiv.className = 'status error';
+                statusDiv.style.display = 'block';
+                statusDiv.innerHTML = `
+                    <strong>❌ Gagal Mengirim!</strong><br>
+                    Error: ${error.text || error.message || 'Unknown error'}<br>
+                    Status: ${error.status || 'N/A'}<br>
+                    <small style="margin-top: 10px; display: block;">
+                        Cek Console (F12) untuk detail lengkap
+                    </small>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Kirim Test Email';
+            }
+        });
+    </script>
+</body>
+</html>

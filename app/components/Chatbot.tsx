@@ -31,29 +31,29 @@ const personalData = {
 
 const responses = {
   greeting: [
-    "Halo bro! Gw bot nya Dillan nih. Ada yang bisa gw bantu? 🤙",
-    "Yo! Mau tau apa tentang Dillan? Tanya aja santai 😎",
-    "Hai! Gw di sini buat jawab semua pertanyaan lo tentang Dillan. Gas! 🚀"
+    "Halo bro! Gw bot nya Dillan. Ada yang bisa gw bantu? 🤙",
+    "Yo! Mau tau apa tentang gw? Tanya bae gausah ragu 😎",
+    "Hai! Gw di sini buat jawab semua pertanyaan lo tentang gw (dillan). Gas! 🚀"
   ],
   goodbye: [
-    "Oke bro, sampai jumpa lagi! Stay cool 😎✌️",
-    "Dadah! Kapan-kapan chat lagi ya 👋",
+    "Oke bro, sampai jumpa lagi!✌️",
+    "Dadah! Kapan-kapan chat gw lagi ya 👋",
     "Sip, see you! Jangan lupa balik lagi 🤙",
-    "Oke deh, bye bye! Take care bro 🫡"
+    "Oke deh, bye bye!"
   ],
   thanks: [
-    "Sama-sama bro! Santai aja 😊",
-    "No problem! Seneng bisa bantu 🤙",
-    "Siap! Kapan aja butuh info tinggal chat aja 👍",
+    "Sama-sama bro! Santai bae 😊",
+    "ora ngapa! Seneng bisa bantu 🤙",
+    "Siap! Kapan bae butuh info tinggal chat gw bae 👍",
     "Oke bro, anytime! 😎"
   ],
   name: [
-    `Nama gw ${personalData.name}, tapi panggil Dillan aja bro!`,
+    `Nama gw ${personalData.name}, tapi panggil Dillan bae bro!`,
     `Gw ${personalData.name}. Nice to meet you! 🤝`
   ],
   age: [
-    `Gw ${personalData.age} tahun bro, masih muda masih semangat! 💪`,
-    `Umur gw baru ${personalData.age} tahun, tapi skill udah oke punya 😎`
+    `Gw ${personalData.age} tahun bro,`,
+    `Umur gw baru ${personalData.age} tahun,`
   ],
   location: [
     `Gw tinggal di ${personalData.location} bro.`,
@@ -61,14 +61,14 @@ const responses = {
   ],
   school: [
     `Gw sekolah di ${personalData.school}.`,
-    `Lagi sekolah di ${personalData.school} nih, jurusan IT 🎓`
+    `Lagi sekolah di ${personalData.school} nih, jurusan RPL 🎓`
   ],
   skills: [
-    `Skill gw: ${personalData.skills.join(', ')}. Lumayan kan? 😏`,
-    `Gw bisa ${personalData.skills.slice(0, 4).join(', ')} dan masih banyak lagi bro! 💻`
+    `Skill gw: ${personalData.skills.join(', ')}. Masih gua kembangin? `,
+    `Gw cuman bisa ${personalData.skills.slice(0, 4).join(', ')}  💻`
   ],
   experience: [
-    `Pengalaman coding gw udah ${personalData.experience} nih!`,
+    `Pengalaman coding gw baru ${personalData.experience} nih!`,
     `Udah ${personalData.experience} gw nge-code, masih terus belajar! 📈`
   ],
   projects: [
@@ -109,7 +109,7 @@ const responses = {
     `Email gw buat kerjaan: <a href="mailto:${personalData.email}" style="color: #EA4335; text-decoration: underline;">${personalData.email}</a> 💼`
   ],
   hobby: [
-    `Hobi gw coding, gaming, sama dengerin musik bro! 🎮🎵`,
+    `Hobi gw coding, gitaran, gambar, sama emelan 🎮🎵`,
     `Gw suka main game, coding project baru, sama explore tech terbaru 🚀`,
     `Waktu luang gw coding, gaming, atau belajar hal baru 💻`
   ],
@@ -146,7 +146,7 @@ const responses = {
     `Untung ortu gw ada, lu yatim piatu 😎`
   ],
   roasting_general: [
-    `Wah ada yang salty nih 😂`,
+    `well well well 😂`,
     `Santai bro, jangan toxic 🤙`,
     `Eh ada yang kesel ya? Chill aja 😎`,
     `Wkwkwk lu lucu deh 🤣`,
@@ -155,12 +155,12 @@ const responses = {
     `Gausah emosi dong, peace ✌️`,
     `Lu kenapa sih? Bad mood? 😅`,
     `Oke lah kalo lu bilang gitu 🙄`,
-    `Chill bro, gw cuma bot 🤖`
+    `nanya yang bener dikit bro, gua ada limitnya 🤖`
   ],
   identity: [
     `Gw bot nya Dillan bro! Asisten virtual yang kece 🤖`,
     `Nama gw Dillan Assistant, gw di sini buat bantuin lo tau tentang Dillan 😎`,
-    `Gw AI chatbot buatan Dillan, siap jawab semua pertanyaan lo! 🚀`
+    `Gw Assistant buatan Dillan, siap jawab semua pertanyaan lo! 🚀`
   ],
   origin: [
     `Gw dari Bekasi, Indonesia bro! Kota yang oke punya 📍`,

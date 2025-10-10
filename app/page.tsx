@@ -1,13 +1,14 @@
 'use client';
 
-import { LazyMotion, domAnimation, m } from 'framer-motion';
-import { Mail, Github, Linkedin, ExternalLink, ArrowRight } from 'lucide-react';
+import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
+import { Mail, Github, Linkedin, ExternalLink, ArrowRight, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { 
   SiHtml5, SiCss3, SiJavascript, SiReact, SiNextdotjs, SiLaravel, SiNodedotjs, SiMongodb, 
-  SiMysql, SiGit, SiFigma, SiTailwindcss, SiTypescript, SiXampp 
+  SiMysql, SiGit, SiFigma, SiTailwindcss, SiTypescript, SiXampp, SiWhatsapp 
 } from 'react-icons/si';
 import { VscVscode } from 'react-icons/vsc';
 import { useState, useEffect, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import Spline from '@splinetool/react-spline';
 import Chatbot from './components/Chatbot';
 import GithubContributions from './components/GithubContributions';
@@ -19,6 +20,58 @@ export default function Home() {
   // Render 3D only after first time hero is visible; keep mounted afterwards
   const [shouldRender3D, setShouldRender3D] = useState(false);
   const [showSection, setShowSection] = useState<string | null>(null);
+  // EmailJS
+  const contactFormRef = useRef<HTMLFormElement | null>(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [sendStatus, setSendStatus] = useState<'idle'|'success'|'error'>('idle');
+
+  const SERVICE_ID = 'service_nj947y5';
+  const TEMPLATE_ID = 'template_k28jkce';
+  const PUBLIC_KEY = 'Z7mhNLfOSIFuaF2Z6';
+
+  // Init EmailJS once on mount
+  useEffect(() => {
+    try {
+      emailjs.init({ publicKey: PUBLIC_KEY });
+    } catch (e) {
+      console.error('EmailJS init error:', e);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (sendingMessage) return;
+    setSendingMessage(true);
+    setSendStatus('idle');
+
+    try {
+      const form = contactFormRef.current;
+      if (!form) throw new Error('Form tidak ditemukan');
+
+      // Gunakan sendForm agar EmailJS otomatis membaca field by name
+      await emailjs.sendForm(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        form,
+        { publicKey: PUBLIC_KEY }
+      );
+
+      setSendStatus('success');
+      form.reset();
+    } catch (err: any) {
+      setSendStatus('error');
+      console.error('EmailJS error details:', {
+        text: err?.text,
+        status: err?.status,
+        message: err?.message,
+        fullError: err
+      });
+      alert(`Gagal mengirim email. Error: ${err?.text || err?.message || 'Unknown error'}. Cek console untuk detail.`);
+    } finally {
+      setSendingMessage(false);
+    }
+  };
 
   // Restore section from URL hash on mount
   useEffect(() => {
@@ -161,25 +214,60 @@ export default function Home() {
 
         {/* Navigation Links */}
         <div className="flex items-center gap-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
-          <button onClick={() => setShowSection(null)} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
+          <button 
+            onClick={() => setShowSection(null)} 
+            className={`relative text-sm font-medium transition-colors group ${
+              showSection === null ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
+            }`}
+          >
             Beranda
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
+            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
+              showSection === null ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}></span>
           </button>
-          <button onClick={() => setShowSection('about')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
+          <button 
+            onClick={() => setShowSection('about')} 
+            className={`relative text-sm font-medium transition-colors group ${
+              showSection === 'about' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
+            }`}
+          >
             Tentang
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
+            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
+              showSection === 'about' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}></span>
           </button>
-          <button onClick={() => setShowSection('skill')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
+          <button 
+            onClick={() => setShowSection('skill')} 
+            className={`relative text-sm font-medium transition-colors group ${
+              showSection === 'skill' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
+            }`}
+          >
             Keahlian
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
+            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
+              showSection === 'skill' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}></span>
           </button>
-          <button onClick={() => setShowSection('projects')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
+          <button 
+            onClick={() => setShowSection('projects')} 
+            className={`relative text-sm font-medium transition-colors group ${
+              showSection === 'projects' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
+            }`}
+          >
             Proyek
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
+            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
+              showSection === 'projects' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}></span>
           </button>
-          <button onClick={() => setShowSection('contact')} className="relative text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors group">
+          <button 
+            onClick={() => setShowSection('contact')} 
+            className={`relative text-sm font-medium transition-colors group ${
+              showSection === 'contact' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
+            }`}
+          >
             Kontak
-            <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-once transition-opacity"></span>
+            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
+              showSection === 'contact' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}></span>
           </button>
         </div>
       </m.div>
@@ -233,7 +321,7 @@ export default function Home() {
                 Pengembang Web
               </h1>
               <p className="text-sm md:text-base text-gray-700 mb-5 leading-relaxed max-w-sm drop-shadow-sm">
-                Pengembang web berusia 17 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
+              Pengembang web berusia 17 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
               </p>
               <m.button
                 onClick={() => setShowSection('projects')}
@@ -333,16 +421,15 @@ export default function Home() {
                 {/* Introduction */}
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                    Pengembang Web
+                    web developer
                   </h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    Saya Dillan Ilkham Nur Fazry, pengembang web berusia 17 tahun dari Bekasi, Indonesia. 
+                    Saya Dillan Ilkham Nur Fazry, web developer berusia 17 tahun dari Bekasi, Indonesia. 
                     Saat ini belajar di SMK Telekomunikasi Telesandi Bekasi, saya fokus membuat 
                     aplikasi web modern dengan kode yang bersih dan efisien.
                   </p>
                   <p className="text-gray-600 leading-relaxed">
-                    Fokus saya membangun antarmuka ramah pengguna dan sistem backend yang kuat 
-                    untuk menyelesaikan masalah nyata melalui teknologi.
+                    saya berfokus pada bidang front end dengan design yang minimalis.
                   </p>
                 </div>
 
@@ -382,7 +469,7 @@ export default function Home() {
                   <ul className="space-y-3 text-gray-600">
                     <li className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                      <span>Menguasai pengembangan full-stack</span>
+                      <span>Menguasai pengembangan aplikasi full-stack</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
@@ -401,9 +488,9 @@ export default function Home() {
 
                 {/* Interests */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Minat</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Hobby</h4>
                   <div className="flex flex-wrap gap-2">
-                    {['Pengembangan Web', 'Desain UI/UX', 'Aplikasi Mobile', 'Komputasi Awan', 'AI & ML'].map((interest, i) => (
+                    {['Membangung sebuah website', 'Gitaran', 'Menggambar', 'Main game'].map((interest, i) => (
                       <span key={i} className="px-4 py-2 bg-white rounded-lg text-sm font-medium text-gray-700 shadow-sm">
                         {interest}
                       </span>
@@ -415,9 +502,9 @@ export default function Home() {
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900 mb-3">Filosofi Saya</h4>
                   <p className="text-gray-600 italic leading-relaxed">
-                    "Kode bukan hanya tentang membuat sesuatu bekerja, tetapi menciptakan solusi elegan 
-                    yang memberi dampak pada kehidupan banyak orang."
+                    "Coding bukan untuk membuat kita menjadi keren, tetapi untuk melampiaskan imajinasi, dan membuat pikiran menjadi kritis."
                   </p>
+                  <p>#Dlan12_</p>
                 </div>
               </m.div>
             </div>
@@ -565,7 +652,7 @@ export default function Home() {
               <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 Kumpulan proyek yang menampilkan kemampuan saya dalam pengembangan web,
-                mulai dari antarmuka frontend hingga aplikasi full-stack.
+                mulai dari aplikasi frontend hingga aplikasi full-stack.
               </p>
             </m.div>
 
@@ -672,39 +759,40 @@ export default function Home() {
 
                 {/* Contact Methods */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
+                  {/* Email */}
+                  <a href="mailto:dilaninf6@gmail.com" className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors">
                       <Mail className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900">Email</h4>
-                      <p className="text-gray-600">dilaninf6@gmail.com</p>
+                      <p className="text-gray-600 group-hover:underline">dilaninf6@gmail.com</p>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.52 3.48a12 12 0 0 0-17.04 0c-3.2 3.2-3.2 8.38 0 11.58l.3.3-.7 2.6 2.66-.7.29.28a8.17 8.17 0 0 0 5.79 2.4h.01c2.2 0 4.26-.86 5.8-2.4a12 12 0 0 0 0-17.06Z"/>
-                      </svg>
+                  </a>
+
+                  {/* WhatsApp */}
+                  <a href="https://wa.me/6285591022177" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors">
+                      <SiWhatsapp className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900">WhatsApp</h4>
-                      <p className="text-gray-600">+62 855-9102-2177</p>
+                      <p className="text-gray-600 group-hover:underline">+62 855-9102-2177</p>
                     </div>
-                  </div>
+                  </a>
 
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center">
+                  {/* Instagram */}
+                  <a href="https://instagram.com/Dlan12_" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors">
                       <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                       </svg>
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900">Instagram</h4>
-                      <p className="text-gray-600">@Dlan12_</p>
+                      <p className="text-gray-600 group-hover:underline">@Dlan12_</p>
                     </div>
-                  </div>
+                  </a>
                 </div>
 
                 {/* Social Links */}
@@ -741,12 +829,14 @@ export default function Home() {
                   Kirim Pesan
                 </h3>
                 
-                <form className="space-y-6">
+                <form ref={contactFormRef} onSubmit={handleSendMessage} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Nama</label>
                       <input
                         type="text"
+                        name="user_name"
+                        required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200"
                         placeholder="Nama lengkap Anda"
                       />
@@ -755,6 +845,8 @@ export default function Home() {
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                       <input
                         type="email"
+                        name="user_email"
+                        required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200"
                         placeholder="email@anda.com"
                       />
@@ -765,6 +857,8 @@ export default function Home() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Subjek</label>
                     <input
                       type="text"
+                      name="subject"
+                      required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200"
                       placeholder="Permintaan proyek"
                     />
@@ -774,18 +868,117 @@ export default function Home() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Pesan</label>
                     <textarea
                       rows={5}
+                      name="message"
+                      required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-gray-900 focus:ring-1 focus:ring-gray-900 focus:outline-none transition-colors duration-200 resize-none"
                       placeholder="Ceritakan tentang proyek Anda..."
                     />
                   </div>
                   
-                  <button
-                    type="submit"
-                    className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors duration-200"
-                    style={{ fontFamily: 'var(--font-orbitron)' }}
-                  >
-                    Kirim Pesan
-                  </button>
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={sendingMessage}
+                      className="w-full px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+                      style={{ fontFamily: 'var(--font-orbitron)' }}
+                    >
+                      {sendingMessage ? 'Mengirim...' : 'Kirim Pesan'}
+                    </button>
+
+                    {/* Robotic Notification */}
+                    <AnimatePresence mode="wait">
+                      {sendingMessage && (
+                        <m.div
+                          key="loading"
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                          className="mt-4 relative overflow-hidden bg-blue-50 border-2 border-blue-500 px-4 py-3"
+                          style={{ 
+                            clipPath: 'polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px)',
+                            fontFamily: 'var(--font-orbitron)'
+                          }}
+                        >
+                          {/* Scanning line */}
+                          <m.div
+                            className="absolute inset-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"
+                            animate={{ y: [0, 48, 0] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                          />
+                          <div className="relative flex items-center gap-3">
+                            <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                            <span className="text-sm font-medium text-blue-900 tracking-wide">
+                              TRANSMITTING DATA...
+                            </span>
+                          </div>
+                        </m.div>
+                      )}
+
+                      {sendStatus === 'success' && !sendingMessage && (
+                        <m.div
+                          key="success"
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                          className="mt-4 relative overflow-hidden bg-green-50 border-2 border-green-500 px-4 py-3"
+                          style={{ 
+                            clipPath: 'polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px)',
+                            fontFamily: 'var(--font-orbitron)'
+                          }}
+                        >
+                          {/* Success pulse */}
+                          <m.div
+                            className="absolute inset-0 bg-green-500 opacity-10"
+                            animate={{ opacity: [0.1, 0.3, 0.1] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          />
+                          <div className="relative flex items-center gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-green-600" />
+                            <span className="text-sm font-medium text-green-900 tracking-wide">
+                              MESSAGE TRANSMITTED SUCCESSFULLY
+                            </span>
+                          </div>
+                          {/* Progress bar */}
+                          <m.div
+                            className="absolute bottom-0 left-0 h-[2px] bg-green-600"
+                            initial={{ width: '100%' }}
+                            animate={{ width: '0%' }}
+                            transition={{ duration: 4, ease: 'linear' }}
+                          />
+                        </m.div>
+                      )}
+
+                      {sendStatus === 'error' && !sendingMessage && (
+                        <m.div
+                          key="error"
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                          className="mt-4 relative overflow-hidden bg-red-50 border-2 border-red-500 px-4 py-3"
+                          style={{ 
+                            clipPath: 'polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0% 100%, 0% 6px)',
+                            fontFamily: 'var(--font-orbitron)'
+                          }}
+                        >
+                          {/* Error glitch */}
+                          <m.div
+                            className="absolute inset-0 bg-red-500 opacity-10"
+                            animate={{ opacity: [0.1, 0.2, 0.1, 0.2, 0.1] }}
+                            transition={{ duration: 0.5, repeat: 3 }}
+                          />
+                          <div className="relative flex items-center gap-3">
+                            <XCircle className="w-5 h-5 text-red-600" />
+                            <span className="text-sm font-medium text-red-900 tracking-wide">
+                              TRANSMISSION FAILED - RETRY
+                            </span>
+                          </div>
+                        </m.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </form>
               </m.div>
             </div>
@@ -814,7 +1007,7 @@ export default function Home() {
                 Dillan Ilkham
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Pengembang Web yang bersemangat menciptakan solusi digital modern, efisien, dan ramah pengguna.
+              just student who love to make website
               </p>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -888,7 +1081,7 @@ export default function Home() {
             className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4"
           >
             <div className="text-sm text-gray-600">
-              © 2024 Dillan Ilkham Nur Fazry. Hak cipta dilindungi.
+              © 2024 Dillan Ilkham Nur Fazry.
             </div>
             <div className="text-sm text-gray-500">
               Dibangun dengan Next.js & Tailwind CSS
