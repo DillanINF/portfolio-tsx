@@ -1,7 +1,7 @@
 'use client';
 
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
-import { Mail, Github, Linkedin, ExternalLink, ArrowRight, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { Mail, Github, Linkedin, ExternalLink, ArrowRight, CheckCircle2, XCircle, Loader2, Menu, X } from 'lucide-react';
 import { 
   SiHtml5, SiCss3, SiJavascript, SiReact, SiNextdotjs, SiLaravel, SiNodedotjs, SiMongodb, 
   SiMysql, SiGit, SiFigma, SiTailwindcss, SiTypescript, SiXampp, SiWhatsapp 
@@ -11,7 +11,6 @@ import { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import Spline from '@splinetool/react-spline';
 import Chatbot from './components/Chatbot';
-import GithubContributions from './components/GithubContributions';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
@@ -20,6 +19,10 @@ export default function Home() {
   // Render 3D only after first time hero is visible; keep mounted afterwards
   const [shouldRender3D, setShouldRender3D] = useState(false);
   const [showSection, setShowSection] = useState<string | null>(null);
+  const [selectedProjectImage, setSelectedProjectImage] = useState<string | null>(null);
+  // Responsive helpers
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // EmailJS
   const contactFormRef = useRef<HTMLFormElement | null>(null);
   const [sendingMessage, setSendingMessage] = useState(false);
@@ -37,6 +40,14 @@ export default function Home() {
       console.error('EmailJS init error:', e);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Detect small screens for responsive tweaks (including Spline DPR)
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < 768);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, []);
 
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -159,48 +170,59 @@ export default function Home() {
 
   const projects = [
     {
-      title: 'Platform E-Commerce',
-      category: 'Pengembangan Web',
-      description: 'Solusi e-commerce modern dengan pengalaman pengguna mulus dan integrasi pembayaran yang aman.',
-      tech: 'Next.js, TypeScript, Stripe',
-      year: '2024'
+      title: 'Manajemen Perusahaan',
+      category: 'Website',
+      description: 'Solusi memanajemen perusahaan dengan fitur-fitur yang lengkap.',
+      tech: 'Laravel, PHP, MySQL, Tailwind CSS, Alpine.js',
+      year: '2025'
     },
     {
-      title: 'Dashboard Analitik',
-      category: 'Desain UI/UX',
-      description: 'Dashboard analitik komprehensif dengan visualisasi data interaktif dan wawasan real-time.',
-      tech: 'React, D3.js, Node.js',
-      year: '2024'
+      title: 'Game-Store',
+      category: 'Website',
+      description: 'Aplikasi berbasis website game store yang memungkinkan pengguna untuk membeli game digital.',
+      tech: 'React, Vite, TypeScript, Tailwind, Express, Prisma',
+      year: '2025'
     },
     {
-      title: 'Aplikasi Mobile Banking',
-      category: 'Desain Mobile',
-      description: 'Aplikasi perbankan intuitif yang fokus pada keamanan dan kemudahan pengelolaan keuangan.',
-      tech: 'React Native, Firebase',
-      year: '2023'
+   title: 'Pemesanan Makanan',
+   category: 'Website',
+   description: 'Website pemesanan Mie Ayam & Bakso dengan form pesanan dan daftar order.',
+   tech: 'PHP, MySQL, Tailwind CSS',
+   year: '2024'
+     },
+     {
+       title: 'Music',
+       category: 'Website',
+       description: 'Website musik dengan fitur-fitur yang lengkap.',
+       tech: 'Next.js 15, React 19, TypeScript, Tailwind CSS v4, Framer Motion, Lucide, Next/Image, Jamendo API',
+       year: '2025'
+     },
+    {
+      title: 'Payroll System',
+      category: 'Desktop',
+      description: 'Aplikasi desktop penggajian karyawan berbasis Python & SQLite dengan CRUD, absensi, komponen gaji, dan slip gaji (PDF).',
+      tech: 'Python, PyQt6, SQLite, bcrypt, pandas, reportlab, qt-material',
+      year: '2025'
     },
     {
-      title: 'Sistem Identitas Merek',
-      category: 'Branding',
-      description: 'Identitas merek lengkap dan sistem desain untuk startup fashion mewah.',
-      tech: 'Figma, Adobe Creative Suite',
-      year: '2023'
-    },
-    {
-      title: 'Landing Page SaaS',
-      category: 'Pengembangan Web',
-      description: 'Landing page dengan konversi tinggi, performa optimal, dan animasi modern.',
-      tech: 'Next.js, Framer Motion',
-      year: '2024'
-    },
-    {
-      title: 'Website Portofolio',
-      category: 'Full Stack',
-      description: 'Portofolio pribadi yang menampilkan proyek dengan desain elegan dan interaksi halus.',
-      tech: 'Next.js, Tailwind CSS',
+      title: 'Kalkulator',
+      category: 'Mobile',
+      description: 'Aplikasi mobile kalkulator sederhana yang dapat melakukan perhitungan matematika.',
+      tech: 'MIT App Inventor',
       year: '2024'
     }
   ];
+
+  const projectImages = [
+    '/images/1.png',
+    '/images/2.png',
+    '/images/3.png',
+    '/images/4.png',
+    '/images/5.png',
+    '/images/6.png',
+  ];
+
+  const getProjectImage = (i: number) => projectImages[i % projectImages.length];
 
   // Ikon teknologi menggunakan react-icons (stabil, tidak tergantung CDN)
   const techs = [
@@ -227,17 +249,18 @@ export default function Home() {
       {/* Persistent Navigation */}
       <m.div
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: selectedProjectImage ? 0 : 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="fixed top-8 left-8 right-8 z-50 flex items-center justify-between pointer-events-auto"
+        className="fixed top-4 md:top-8 left-4 md:left-8 right-4 md:right-8 z-40 flex items-center justify-between pointer-events-auto"
+        style={{ display: selectedProjectImage ? 'none' : 'flex' }}
       >
         {/* Logo */}
-        <button onClick={() => setShowSection(null)} className="text-xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: 'var(--font-orbitron)' }}>
+        <button onClick={() => setShowSection(null)} className="text-base md:text-xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: 'var(--font-orbitron)' }}>
           Dillan not dirman
         </button>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
+        {/* Desktop Navigation Links */}
+        <div className="hidden md:flex items-center gap-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
           <button 
             onClick={() => setShowSection(null)} 
             className={`relative text-sm font-medium transition-colors group ${
@@ -294,7 +317,100 @@ export default function Home() {
             }`}></span>
           </button>
         </div>
+
+        {/* Mobile Hamburger Button */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden p-2 text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </m.div>
+
+      {/* Mobile Navigation Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/50 z-35 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <m.div
+              initial={{ opacity: 0, x: '100%' }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: '100%' }}
+              transition={{ type: 'tween', duration: 0.3 }}
+              className="fixed top-0 right-0 bottom-0 w-64 bg-white shadow-2xl z-45 md:hidden"
+            >
+              <div className="flex flex-col h-full pt-20 px-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                <nav className="flex flex-col gap-6">
+                  <button
+                    onClick={() => {
+                      setShowSection(null);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`text-left text-lg font-medium transition-colors ${
+                      showSection === null ? 'text-gray-900' : 'text-gray-700'
+                    }`}
+                  >
+                    Beranda
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowSection('about');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`text-left text-lg font-medium transition-colors ${
+                      showSection === 'about' ? 'text-gray-900' : 'text-gray-700'
+                    }`}
+                  >
+                    Tentang
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowSection('skill');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`text-left text-lg font-medium transition-colors ${
+                      showSection === 'skill' ? 'text-gray-900' : 'text-gray-700'
+                    }`}
+                  >
+                    Keahlian
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowSection('projects');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`text-left text-lg font-medium transition-colors ${
+                      showSection === 'projects' ? 'text-gray-900' : 'text-gray-700'
+                    }`}
+                  >
+                    Proyek
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowSection('contact');
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`text-left text-lg font-medium transition-colors ${
+                      showSection === 'contact' ? 'text-gray-900' : 'text-gray-700'
+                    }`}
+                  >
+                    Kontak
+                  </button>
+                </nav>
+              </div>
+            </m.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section - Only show when no section is active */}
       {!showSection && (
@@ -317,15 +433,16 @@ export default function Home() {
                 // Performance optimizations
                 if (spline && spline.renderer) {
                   spline.renderer.setClearColor(0xe5e7eb, 1);
-                  // Lower DPR to reduce GPU load while keeping interaction
-                  spline.renderer.setPixelRatio(0.75);
+                  // Lower DPR on mobile to reduce GPU load while keeping interaction
+                  spline.renderer.setPixelRatio(isMobile ? 0.5 : 0.85);
                   spline.renderer.shadowMap.enabled = false;
                 }
                 if (spline && spline.scene) {
                   spline.scene.background = null;
                 }
                 if (spline && spline.camera) {
-                  spline.camera.position.x += 200;
+                  // Slightly different camera offset for desktop only
+                  if (!isMobile) spline.camera.position.x += 200;
                 }
               }}
             />
@@ -351,7 +468,7 @@ export default function Home() {
                 onClick={() => setShowSection('projects')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative inline-flex items-center gap-2 px-10 py-4 bg-gray-900 text-white font-medium overflow-hidden group"
+                className="relative inline-flex items-center gap-2 px-6 md:px-10 py-3 md:py-4 bg-gray-900 text-white text-sm md:text-base font-medium overflow-hidden group"
                 style={{ 
                   transform: 'skewX(-10deg)',
                   clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)'
@@ -382,23 +499,23 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute bottom-12 right-12 z-20 pointer-events-none"
+          className="absolute bottom-6 md:bottom-12 right-6 md:right-12 left-6 md:left-auto z-20 pointer-events-none"
         >
-          <div className="bg-gray-200/80 backdrop-blur-sm px-6 py-4 rounded-lg shadow-lg border border-gray-300">
-            <div className="flex items-center gap-6">
+          <div className="bg-gray-200/80 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg shadow-lg border border-gray-300">
+            <div className="flex items-center justify-around md:gap-6">
               <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>1+</p>
-                <p className="text-xs text-gray-600 uppercase tracking-wider">Tahun Coding</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>1+</p>
+                <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-wider">Tahun Coding</p>
               </div>
-              <div className="w-px h-10 bg-gray-300"></div>
+              <div className="w-px h-8 md:h-10 bg-gray-300"></div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>5+</p>
-                <p className="text-xs text-gray-600 uppercase tracking-wider">Proyek</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>5+</p>
+                <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-wider">Proyek</p>
               </div>
-              <div className="w-px h-10 bg-gray-300"></div>
+              <div className="w-px h-8 md:h-10 bg-gray-300"></div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>100%</p>
-                <p className="text-xs text-gray-600 uppercase tracking-wider">Passion</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>100%</p>
+                <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-wider">Passion</p>
               </div>
             </div>
           </div>
@@ -427,7 +544,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 Tentang Saya
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto"></div>
@@ -444,7 +561,7 @@ export default function Home() {
               >
                 {/* Introduction */}
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
                     web developer
                   </h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
@@ -458,7 +575,7 @@ export default function Home() {
                 </div>
 
                 {/* Personal Info */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Lokasi</h4>
                     <p className="text-gray-600">Bekasi, Indonesia</p>
@@ -487,7 +604,7 @@ export default function Home() {
               >
                 {/* Goals */}
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
                     Tujuan Saat Ini
                   </h3>
                   <ul className="space-y-3 text-gray-600">
@@ -556,7 +673,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 Keahlian & Keunggulan
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
@@ -572,7 +689,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-20"
             >
-              <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center" style={{ fontFamily: 'var(--font-orbitron)' }}>
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-8 text-center" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 Kompetensi Inti
               </h3>
               <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -607,19 +724,19 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-center mb-20"
+              className="text-center mb-8"
             >
-              <h3 className="text-2xl font-bold text-gray-900 mb-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-8 text-center" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 Teknologi yang Saya Gunakan
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4 md:gap-6">
                 {techs.map((tech, index) => (
                   <m.div
                     key={tech.name}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.8 + index * 0.03 }}
-                    className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+                    className="flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     <div className="h-8 w-8 mb-2 flex items-center justify-center">
                       {(() => {
@@ -637,14 +754,6 @@ export default function Home() {
               </div>
             </m.div>
 
-            {/* GitHub Contributions */}
-            <m.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              <GithubContributions />
-            </m.div>
           </div>
         </section>
       )}
@@ -670,7 +779,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 Proyek Saya
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
@@ -680,17 +789,17 @@ export default function Home() {
               </p>
             </m.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {projects.map((project, index) => (
                 <m.div
                   key={index}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1, duration: 0.6 }}
-                  className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group"
+                  className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group h-full flex flex-col"
                 >
                   {/* Project Header */}
-                  <div className="p-6 border-b border-gray-100">
+                  <div className="p-6 border-b border-gray-100 min-h-48">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         {project.category}
@@ -706,7 +815,7 @@ export default function Home() {
                   </div>
 
                   {/* Tech Stack */}
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-1">
                     <h4 className="text-sm font-semibold text-gray-900 mb-3">Teknologi</h4>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {project.tech.split(', ').map((tech, i) => (
@@ -720,7 +829,15 @@ export default function Home() {
                     </div>
                     
                     {/* Action Button */}
-                    <button className="w-full py-2 text-sm font-medium text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2">
+                    <button onClick={() => setSelectedProjectImage(
+                      project.title === 'Pemesanan Makanan'
+                        ? '/images/4.png'
+                        : project.title === 'Music'
+                          ? '/images/5.png'
+                          : project.title === 'Payroll System'
+                            ? '/images/3.png'
+                            : getProjectImage(index)
+                    )} className="w-full py-2 text-sm font-medium text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center gap-2 mt-auto">
                       Lihat Proyek
                       <ExternalLink className="w-4 h-4" />
                     </button>
@@ -728,6 +845,42 @@ export default function Home() {
                 </m.div>
               ))}
             </div>
+            <AnimatePresence>
+              {selectedProjectImage && (
+                <m.div
+                  key="project-modal"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70"
+                  onClick={() => setSelectedProjectImage(null)}
+                >
+                  <m.div
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="relative max-w-4xl w-[92%] sm:w-[90%] bg-white rounded-lg overflow-hidden shadow-xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center justify-between p-3 border-b border-gray-200 bg-white">
+                      <span className="text-sm font-medium text-gray-700">Pratinjau Proyek</span>
+                      <button
+                        onClick={() => setSelectedProjectImage(null)}
+                        className="px-3 py-1 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                    <div className="p-3 bg-gray-50">
+                      <div className="max-h-[70vh] sm:max-h-[75vh] overflow-auto">
+                        <img src={selectedProjectImage} alt="Project Image" className="w-full h-auto object-contain rounded-md" />
+                      </div>
+                    </div>
+                  </m.div>
+                </m.div>
+              )}
+            </AnimatePresence>
           </div>
         </section>
       )}
@@ -753,7 +906,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-center mb-16"
             >
-              <h2 className="text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 Hubungi Saya
               </h2>
               <div className="w-16 h-0.5 bg-gray-900 mx-auto mb-4"></div>
@@ -763,7 +916,7 @@ export default function Home() {
               </p>
             </m.div>
 
-            <div className="grid lg:grid-cols-2 gap-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
               {/* Left: Contact Info */}
               <m.div
                 initial={{ opacity: 0, x: -30 }}
@@ -772,7 +925,7 @@ export default function Home() {
                 className="space-y-8"
               >
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
                     Mari Terhubung
                   </h3>
                   <p className="text-gray-600 leading-relaxed mb-8">
@@ -849,7 +1002,7 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="bg-white rounded-lg shadow-sm p-8"
               >
-                <h3 className="text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
                   Kirim Pesan
                 </h3>
                 
@@ -1020,7 +1173,7 @@ export default function Home() {
         className="bg-white border-t border-gray-200 py-12 px-6"
       >
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Left: Brand */}
             <m.div 
               initial={{ opacity: 0, y: 20 }}
