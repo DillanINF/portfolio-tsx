@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* Performance optimizations */
   reactStrictMode: true,
-  swcMinify: true,
   
   // Optimize images
   images: {
@@ -14,9 +13,6 @@ const nextConfig: NextConfig = {
   
   // Compress output
   compress: true,
-  
-  // Optimize fonts
-  optimizeFonts: true,
   
   // Production optimizations
   poweredByHeader: false,

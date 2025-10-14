@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const client = new OpenAI({
-  baseURL: "https://router.huggingface.co/v1",
-  apiKey: process.env.HF_TOKEN,
-});
+export const dynamic = 'force-dynamic';
 
 const personalData = {
   name: 'Dillan Ilkham Nur Fazry',
@@ -63,6 +60,19 @@ SINGKAT, JELAS, GAK BERTELE-TELE!`;
 
 export async function POST(request: NextRequest) {
   try {
+    const apiKey = process.env.HF_TOKEN || process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: 'Missing API credentials', details: 'Set HF_TOKEN or OPENAI_API_KEY in environment variables' },
+        { status: 500 }
+      );
+    }
+
+    const client = new OpenAI({
+      baseURL: "https://router.huggingface.co/v1",
+      apiKey,
+    });
+
     const { message } = await request.json();
 
     if (!message) {
