@@ -758,7 +758,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="space-y-8"
+                className="space-y-8 bg-white rounded-lg shadow-sm p-6 md:bg-transparent md:shadow-none md:p-0"
               >
                 <div>
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
@@ -836,7 +836,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="bg-white rounded-lg shadow-sm p-8"
+                className="bg-white rounded-lg shadow-sm p-6 md:p-8"
               >
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
                   Kirim Pesan

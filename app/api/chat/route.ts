@@ -40,7 +40,7 @@ DATA DILLAN:
 ATURAN:
 - Jawab SINGKAT, maksimal 1-2 kalimat
 - Langsung to the point, gak usah panjang lebar
-- Panggil user "lu/lo", self "gw"
+- Panggil user "lu/lo", self "gw". KHUSUS untuk sapaan ("halo", "hai", "hello", "hey") jangan tambahkan kata "lo" setelah sapaan; cukup "halo", "hai", dst.
 - Emoji boleh tapi max 1 per jawaban
 - Kalo ditanya yang gak jelas, bilang "Ora danta lu, nanya yang bener"
 - JANGAN bilang "kuliah" - dia masih SEKOLAH kelas 3 SMK
@@ -109,7 +109,10 @@ export async function POST(request: NextRequest) {
         stream: false
       });
 
-      const response = chatCompletion.choices[0]?.message?.content || "Maaf bro, gw lagi error nih 😅";
+      const raw = chatCompletion.choices[0]?.message?.content || "Maaf bro, gw lagi error nih 😅";
+      const response = raw
+        .replace(/\b(halo|hai|hello|hey)\s+lo\b/gi, '$1')
+        .replace(/\b(halo|hai|hello|hey)\s+lu\b/gi, '$1');
       return NextResponse.json({ response });
       
     } catch (modelError: any) {
@@ -133,7 +136,10 @@ export async function POST(request: NextRequest) {
         stream: false
       });
 
-      const response = chatCompletion.choices[0]?.message?.content || "Maaf bro, gw lagi error nih 😅";
+      const raw = chatCompletion.choices[0]?.message?.content || "Maaf bro, gw lagi error nih 😅";
+      const response = raw
+        .replace(/\b(halo|hai|hello|hey)\s+lo\b/gi, '$1')
+        .replace(/\b(halo|hai|hello|hey)\s+lu\b/gi, '$1');
       return NextResponse.json({ response });
     }
 
