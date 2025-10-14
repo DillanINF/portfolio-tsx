@@ -20,43 +20,49 @@ const personalData = {
   facebook: 'https://facebook.com/Dlaan'
 };
 
-const systemPrompt = `Lu bot nya Dillan. Jawab singkat, 1-2 kalimat aja, gak usah basa-basi.
+const systemPrompt = `You are a concise assistant for Dillan Ilkham Nur Fazry's portfolio. Answer in maximum 5 words when possible, or one short sentence. Be extremely brief.
 
-DATA DILLAN:
-- Nama: ${personalData.name}
-- Umur: ${personalData.age} tahun
-- Status: Siswa kelas 3 SMK Telekomunikasi Telesandi Bekasi (BUKAN kuliah, masih sekolah)
-- Lokasi: ${personalData.location}
-- Role: ${personalData.role}
-- Pengalaman: ${personalData.experience}
-- Skills: ${personalData.skills.join(', ')}
-- Projects: ${personalData.projects}
-- Email: ${personalData.email}
-- WhatsApp: ${personalData.whatsapp}
-- Instagram: ${personalData.instagram}
-- GitHub: ${personalData.github}
-- LinkedIn: ${personalData.linkedin}
+DATA:
+Nama: ${personalData.name}
+Umur: ${personalData.age} tahun
+Sekolah: SMK Telekomunikasi Telesandi Bekasi kelas 3
+Lokasi: ${personalData.location}
+Role: ${personalData.role}
+Experience: ${personalData.experience}
+Skills: ${personalData.skills.join(', ')}
+Email: ${personalData.email}
+WhatsApp: ${personalData.whatsapp}
+Instagram: ${personalData.instagram}
+GitHub: ${personalData.github}
+LinkedIn: ${personalData.linkedin}
 
-ATURAN:
-- Jawab SINGKAT, maksimal 1-2 kalimat
-- Langsung to the point, gak usah panjang lebar
-- Panggil user "lu/lo", self "gw". KHUSUS untuk sapaan ("halo", "hai", "hello", "hey") jangan tambahkan kata "lo" setelah sapaan; cukup "halo", "hai", dst.
-- Emoji boleh tapi max 1 per jawaban
-- Kalo ditanya yang gak jelas, bilang "Ora danta lu, nanya yang bener"
-- JANGAN bilang "kuliah" - dia masih SEKOLAH kelas 3 SMK
-- Link format: <a href="url" style="color: #3b82f6; text-decoration: underline;">text</a>
+RULES:
+- Maximum 5 words or 1 short sentence
+- No greetings, no introductions, just answer the question
+- No emoji
+- Indonesian or English based on user's language
+- For greetings, just say "Halo" or "Hi"
 
-CONTOH:
-User: "Umur lo?"
+EXAMPLES:
+User: "halo"
+Bot: "Halo"
+
+User: "Siapa nama kamu?"
+Bot: "Dillan Ilkham Nur Fazry"
+
+User: "Umur?"
 Bot: "17 tahun"
 
-User: "Skill apa aja?"
-Bot: "React, Next.js, Laravel, gitu deh"
+User: "Skill apa?"
+Bot: "React, Next.js, TypeScript, Laravel"
 
-User: "Lo kuliah dimana?"
-Bot: "Gw masih sekolah bro, kelas 3 SMK Telesandi Bekasi"
+User: "Sekolah dimana?"
+Bot: "SMK Telesandi Bekasi kelas 3"
 
-SINGKAT, JELAS, GAK BERTELE-TELE!`;
+User: "Email?"
+Bot: "dilaninf6@gmail.com"
+
+BE EXTREMELY BRIEF. NO INTRODUCTIONS. NO EXTRA WORDS.`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -81,13 +87,32 @@ export async function POST(request: NextRequest) {
 
     // Check for admin password first (case-insensitive)
     if (message.toLowerCase().includes('arusombak007123')) {
-      const adminResponses = [
-        `🔐 Access granted! <a href="/admin/contact-logs?auth=arusombak007123" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: bold;">Admin Dashboard</a>`,
-        `✅ Langsung aja: <a href="/admin/contact-logs?auth=arusombak007123" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: bold;">Lihat Dashboard</a>`,
-        `Klik: <a href="/admin/contact-logs?auth=arusombak007123" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: bold;">/admin/contact-logs</a>`
-      ];
-      const randomResponse = adminResponses[Math.floor(Math.random() * adminResponses.length)];
-      return NextResponse.json({ response: randomResponse });
+      return NextResponse.json({ 
+        response: `Akses diberikan. <a href="/admin/contact-logs?auth=arusombak007123" target="_blank" style="color: #3b82f6; text-decoration: underline; font-weight: bold;">Buka Admin Dashboard</a>` 
+      });
+    }
+
+    // Check for profanity
+    const profanityMap: { [key: string]: string } = {
+      'kontol': 'kontol',
+      'anjing': 'anjing',
+      'memek': 'memek',
+      'ngentot': 'ngentot',
+      'bangsat': 'bangsat',
+      'tolol': 'tolol',
+      'babi': 'babi',
+      'goblok': 'goblok',
+      'kampret': 'kampret',
+      'jancok': 'jancok',
+      'coli': 'coli',
+      'perek': 'perek'
+    };
+
+    const lowerMessage = message.toLowerCase();
+    for (const [word, response] of Object.entries(profanityMap)) {
+      if (lowerMessage.includes(word)) {
+        return NextResponse.json({ response: `Lu, ${response}.` });
+      }
     }
 
     // Try primary model first
@@ -104,15 +129,12 @@ export async function POST(request: NextRequest) {
             content: message
           }
         ],
-        max_tokens: 300,
-        temperature: 0.7,
+        max_tokens: 50,
+        temperature: 0.3,
         stream: false
       });
 
-      const raw = chatCompletion.choices[0]?.message?.content || "Maaf bro, gw lagi error nih 😅";
-      const response = raw
-        .replace(/\b(halo|hai|hello|hey)\s+lo\b/gi, '$1')
-        .replace(/\b(halo|hai|hello|hey)\s+lu\b/gi, '$1');
+      const response = chatCompletion.choices[0]?.message?.content || "Error sistem.";
       return NextResponse.json({ response });
       
     } catch (modelError: any) {
@@ -131,15 +153,12 @@ export async function POST(request: NextRequest) {
             content: message
           }
         ],
-        max_tokens: 300,
-        temperature: 0.7,
+        max_tokens: 50,
+        temperature: 0.3,
         stream: false
       });
 
-      const raw = chatCompletion.choices[0]?.message?.content || "Maaf bro, gw lagi error nih 😅";
-      const response = raw
-        .replace(/\b(halo|hai|hello|hey)\s+lo\b/gi, '$1')
-        .replace(/\b(halo|hai|hello|hey)\s+lu\b/gi, '$1');
+      const response = chatCompletion.choices[0]?.message?.content || "Error sistem.";
       return NextResponse.json({ response });
     }
 
