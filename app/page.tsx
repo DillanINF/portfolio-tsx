@@ -9,16 +9,10 @@ import {
 import { VscVscode } from 'react-icons/vsc';
 import { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
-import Spline from '@splinetool/react-spline';
 import Chatbot from './components/Chatbot';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
-  const splineRef = useRef<any>(null);
-  const [isSplineLoaded, setIsSplineLoaded] = useState(false);
-  // Render 3D only after first time hero is visible; keep mounted afterwards
-  const [shouldRender3D, setShouldRender3D] = useState(false);
-  const [showSection, setShowSection] = useState<string | null>(null);
   const [selectedProjectImage, setSelectedProjectImage] = useState<string | null>(null);
   // Responsive helpers
   const [isMobile, setIsMobile] = useState(false);
@@ -42,7 +36,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Detect small screens for responsive tweaks (including Spline DPR)
+  // Detect small screens for responsive tweaks
   useEffect(() => {
     const update = () => setIsMobile(window.innerWidth < 768);
     update();
@@ -108,64 +102,33 @@ export default function Home() {
     }
   };
 
-  // Restore section from URL hash on mount
+  // Single-page layout; URL hash handled via anchor links (smooth scroll enabled in globals.css)
+  // Scrollspy with IntersectionObserver to highlight active nav link
   useEffect(() => {
-    const hash = window.location.hash.slice(1); // Remove '#'
-    if (hash && ['about', 'skill', 'projects', 'contact'].includes(hash)) {
-      setShowSection(hash);
-    }
-  }, []);
-
-  // Update URL hash when section changes
-  useEffect(() => {
-    if (showSection) {
-      window.history.replaceState(null, '', `#${showSection}`);
-    } else {
-      window.history.replaceState(null, '', window.location.pathname);
-    }
-  }, [showSection]);
-
-  useEffect(() => {
-    // Optimized: Run only once after load
-    const removeSplineBackground = () => {
-      const splineViewer = document.querySelector('spline-viewer');
-      if (splineViewer) {
-        const shadowRoot = (splineViewer as any).shadowRoot;
-        if (shadowRoot) {
-          const canvas = shadowRoot.querySelector('canvas');
-          if (canvas) {
-            canvas.style.background = 'transparent';
-            canvas.style.backgroundColor = 'transparent';
+    const sections = ['home', 'about', 'skill', 'projects', 'contact'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
           }
-        }
-        (splineViewer as any).style.background = 'transparent';
-        (splineViewer as any).style.backgroundColor = 'transparent';
-      }
-    };
-
-    // Run only twice: immediately and after 1 second
-    removeSplineBackground();
-    const timeout = setTimeout(removeSplineBackground, 1000);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
-  // Enable Spline once hero is seen; do NOT unmount afterwards to keep state and avoid re-appearing
-  useEffect(() => {
-    const hero = document.getElementById('home');
-    if (!hero) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldRender3D(true);
-        }
+        });
       },
-      { root: null, threshold: 0.15 }
+      { rootMargin: '-30% 0px -70% 0px' }
     );
 
-    io.observe(hero);
-    return () => io.disconnect();
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.unobserve(el);
+      });
+      observer.disconnect();
+    };
   }, []);
 
   const projects = [
@@ -245,7 +208,7 @@ export default function Home() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-    <div className="min-h-screen bg-gray-200">
+    <div className="min-h-screen bg-gray-200 snap-y snap-mandatory">
       {/* Persistent Navigation */}
       <m.div
         initial={{ opacity: 0, y: -20 }}
@@ -255,67 +218,32 @@ export default function Home() {
         style={{ display: selectedProjectImage ? 'none' : 'flex' }}
       >
         {/* Logo */}
-        <button onClick={() => setShowSection(null)} className="text-base md:text-xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: 'var(--font-orbitron)' }}>
+        <a href="#home" className="text-base md:text-xl font-bold text-gray-900 tracking-tight" style={{ fontFamily: 'var(--font-orbitron)' }}>
           Dillan not dirman
-        </button>
+        </a>
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8" style={{ fontFamily: 'var(--font-orbitron)' }}>
-          <button 
-            onClick={() => setShowSection(null)} 
-            className={`relative text-sm font-medium transition-colors group ${
-              showSection === null ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
-            }`}
-          >
+          <a href="#home" className={`relative text-sm font-medium transition-colors group ${activeSection === 'home' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'}`}>
             Beranda
-            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
-              showSection === null ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}></span>
-          </button>
-          <button 
-            onClick={() => setShowSection('about')} 
-            className={`relative text-sm font-medium transition-colors group ${
-              showSection === 'about' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
-            }`}
-          >
+            <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-gray-900 transition-transform duration-300 origin-left ${activeSection === 'home' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+          </a>
+          <a href="#about" className={`relative text-sm font-medium transition-colors group ${activeSection === 'about' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'}`}>
             Tentang
-            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
-              showSection === 'about' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}></span>
-          </button>
-          <button 
-            onClick={() => setShowSection('skill')} 
-            className={`relative text-sm font-medium transition-colors group ${
-              showSection === 'skill' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
-            }`}
-          >
+            <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-gray-900 transition-transform duration-300 origin-left ${activeSection === 'about' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+          </a>
+          <a href="#skill" className={`relative text-sm font-medium transition-colors group ${activeSection === 'skill' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'}`}>
             Keahlian
-            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
-              showSection === 'skill' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}></span>
-          </button>
-          <button 
-            onClick={() => setShowSection('projects')} 
-            className={`relative text-sm font-medium transition-colors group ${
-              showSection === 'projects' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
-            }`}
-          >
+            <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-gray-900 transition-transform duration-300 origin-left ${activeSection === 'skill' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+          </a>
+          <a href="#projects" className={`relative text-sm font-medium transition-colors group ${activeSection === 'projects' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'}`}>
             Proyek
-            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
-              showSection === 'projects' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}></span>
-          </button>
-          <button 
-            onClick={() => setShowSection('contact')} 
-            className={`relative text-sm font-medium transition-colors group ${
-              showSection === 'contact' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'
-            }`}
-          >
+            <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-gray-900 transition-transform duration-300 origin-left ${activeSection === 'projects' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+          </a>
+          <a href="#contact" className={`relative text-sm font-medium transition-colors group ${activeSection === 'contact' ? 'text-gray-900' : 'text-gray-700 hover:text-gray-900'}`}>
             Kontak
-            <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-900 to-transparent transition-opacity ${
-              showSection === 'contact' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-            }`}></span>
-          </button>
+            <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-gray-900 transition-transform duration-300 origin-left ${activeSection === 'contact' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`}></span>
+          </a>
         </div>
 
         {/* Mobile Hamburger Button */}
@@ -350,61 +278,11 @@ export default function Home() {
             >
               <div className="flex flex-col h-full pt-20 px-6" style={{ fontFamily: 'var(--font-orbitron)' }}>
                 <nav className="flex flex-col gap-6">
-                  <button
-                    onClick={() => {
-                      setShowSection(null);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-lg font-medium transition-colors ${
-                      showSection === null ? 'text-gray-900' : 'text-gray-700'
-                    }`}
-                  >
-                    Beranda
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowSection('about');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-lg font-medium transition-colors ${
-                      showSection === 'about' ? 'text-gray-900' : 'text-gray-700'
-                    }`}
-                  >
-                    Tentang
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowSection('skill');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-lg font-medium transition-colors ${
-                      showSection === 'skill' ? 'text-gray-900' : 'text-gray-700'
-                    }`}
-                  >
-                    Keahlian
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowSection('projects');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-lg font-medium transition-colors ${
-                      showSection === 'projects' ? 'text-gray-900' : 'text-gray-700'
-                    }`}
-                  >
-                    Proyek
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowSection('contact');
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`text-left text-lg font-medium transition-colors ${
-                      showSection === 'contact' ? 'text-gray-900' : 'text-gray-700'
-                    }`}
-                  >
-                    Kontak
-                  </button>
+                  <a href="#home" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-lg font-medium transition-colors text-gray-700">Beranda</a>
+                  <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-lg font-medium transition-colors text-gray-700">Tentang</a>
+                  <a href="#skill" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-lg font-medium transition-colors text-gray-700">Keahlian</a>
+                  <a href="#projects" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-lg font-medium transition-colors text-gray-700">Proyek</a>
+                  <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-left text-lg font-medium transition-colors text-gray-700">Kontak</a>
                 </nav>
               </div>
             </m.div>
@@ -412,120 +290,70 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Hero Section - Only show when no section is active */}
-      {!showSection && (
-      <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gray-200">
-        {/* Background 3D Model - Full screen for cursor interaction */}
-        <div className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'auto' }}>
-          {shouldRender3D && (
-            <Spline
-              scene="https://prod.spline.design/HBw11aMipqOqgNEL/scene.splinecode"
-              style={{ 
-                width: '100%', 
-                height: '100%',
-                background: '#e5e7eb',
-                backgroundColor: '#e5e7eb',
-                opacity: isSplineLoaded ? 1 : 0,
-                transition: 'opacity 0.5s ease-in-out'
-              }}
-              onLoad={(spline: any) => {
-                setIsSplineLoaded(true);
-                // Performance optimizations
-                if (spline && spline.renderer) {
-                  spline.renderer.setClearColor(0xe5e7eb, 1);
-                  // Lower DPR on mobile to reduce GPU load while keeping interaction
-                  spline.renderer.setPixelRatio(isMobile ? 0.5 : 0.85);
-                  spline.renderer.shadowMap.enabled = false;
-                }
-                if (spline && spline.scene) {
-                  spline.scene.background = null;
-                }
-                if (spline && spline.camera) {
-                  // Slightly different camera offset for desktop only
-                  if (!isMobile) spline.camera.position.x += 200;
-                }
-              }}
-            />
-          )}
+      {/* Hero Section */}
+      <section id="home" className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden bg-gray-200 snap-start p-6">
+        {/* Subtle grid background */}
+        <div className="absolute inset-0 opacity-5" aria-hidden="true">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `linear-gradient(to right, #374151 1px, transparent 1px), linear-gradient(to bottom, #374151 1px, transparent 1px)`,
+            backgroundSize: '40px 40px'
+          }}></div>
         </div>
+        {/* Scan overlay */}
+        <m.div
+          initial={{ y: '-100%', opacity: 0 }}
+          whileInView={{ y: '100%', opacity: [0, 0.35, 0] }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 1.1, ease: 'easeInOut' }}
+          className="pointer-events-none absolute inset-0"
+        >
+          <div className="absolute left-0 right-0 h-32 md:h-40 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+        </m.div>
 
-        {/* Text Content Left - Main info */}
-        <div className="relative z-20 w-full px-6 pointer-events-none">
-          <div className="max-w-7xl mx-auto">
-            <m.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-lg pointer-events-auto"
-            >
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 tracking-tight leading-tight drop-shadow-sm" style={{ fontFamily: 'var(--font-orbitron)' }}>
-                Pengembang Web
-              </h1>
-              <p className="text-sm md:text-base text-gray-700 mb-5 leading-relaxed max-w-sm drop-shadow-sm">
-              Pengembang web berusia 17 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
-              </p>
-              <m.button
-                onClick={() => setShowSection('projects')}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative inline-flex items-center gap-2 px-6 md:px-10 py-3 md:py-4 bg-gray-900 text-white text-sm md:text-base font-medium overflow-hidden group"
-                style={{ 
-                  transform: 'skewX(-10deg)',
-                  clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)'
-                }}
-              >
-                {/* Animated line running through center */}
-                <span className="absolute inset-0 flex items-center justify-center overflow-hidden">
-                  <span 
-                    className="absolute h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-scan"
-                    style={{
-                      animation: 'scan 2s linear infinite'
-                    }}
-                  />
-                </span>
-                
-                {/* Button content - unskew text */}
-                <span className="relative z-10 flex items-center gap-2" style={{ transform: 'skewX(10deg)' }}>
-                  Lihat Karya Saya
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </m.button>
-            </m.div>
-          </div>
-        </div>
-
-        {/* Text Content Right Bottom - Stats/Info */}
+        {/* Main content */}
         <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute bottom-6 md:bottom-12 right-6 md:right-12 left-6 md:left-auto z-20 pointer-events-none"
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-3xl mx-auto"
         >
-          <div className="bg-gray-200/80 backdrop-blur-sm px-4 md:px-6 py-3 md:py-4 rounded-lg shadow-lg border border-gray-300">
-            <div className="flex items-center justify-around md:gap-6">
-              <div className="text-center">
-                <p className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>1+</p>
-                <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-wider">Tahun Coding</p>
-              </div>
-              <div className="w-px h-8 md:h-10 bg-gray-300"></div>
-              <div className="text-center">
-                <p className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>5+</p>
-                <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-wider">Proyek</p>
-              </div>
-              <div className="w-px h-8 md:h-10 bg-gray-300"></div>
-              <div className="text-center">
-                <p className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>100%</p>
-                <p className="text-[10px] md:text-xs text-gray-600 uppercase tracking-wider">Passion</p>
-              </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 tracking-tight" style={{ fontFamily: 'var(--font-orbitron)' }}>
+            Pengembang Web
+          </h1>
+          <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
+            Pengembang web berusia 17 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
+          </p>
+
+          {/* Integrated stats */}
+          <m.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex items-center justify-center gap-6 md:gap-10 bg-gray-200/60 border border-gray-300 rounded-xl px-6 py-4 mb-10 shadow-sm"
+          >
+            <div className="text-center">
+              <p className="text-2xl md:text-3xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>1+</p>
+              <p className="text-xs md:text-sm text-gray-600 uppercase tracking-wider">Tahun Coding</p>
             </div>
-          </div>
+            <div className="w-px h-10 bg-gray-300" />
+            <div className="text-center">
+              <p className="text-2xl md:text-3xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>5+</p>
+              <p className="text-xs md:text-sm text-gray-600 uppercase tracking-wider">Proyek</p>
+            </div>
+            <div className="w-px h-10 bg-gray-300" />
+            <div className="text-center">
+              <p className="text-2xl md:text-3xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-orbitron)' }}>100%</p>
+              <p className="text-xs md:text-sm text-gray-600 uppercase tracking-wider">Passionate</p>
+            </div>
+          </m.div>
+
+          {/* CTA */}
+          
         </m.div>
       </section>
-      )}
 
-      {/* Conditional Sections */}
-      {showSection === 'about' && (
-        <section className="min-h-screen flex items-center justify-center px-6 bg-gray-200 py-20 relative">
+      {/* About Section */}
+        <section id="about" className="min-h-screen flex items-center justify-center px-6 bg-gray-200 py-20 relative snap-start">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0" style={{
@@ -536,7 +364,17 @@ export default function Home() {
               backgroundSize: '40px 40px'
             }}></div>
           </div>
-          <div className="max-w-6xl mx-auto w-full relative z-10">
+          {/* Scan overlay */}
+          <m.div
+            initial={{ y: '-100%', opacity: 0 }}
+            whileInView={{ y: '100%', opacity: [0, 0.35, 0] }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 1.1, ease: 'easeInOut' }}
+            className="pointer-events-none absolute inset-0"
+          >
+            <div className="absolute left-0 right-0 h-32 md:h-40 bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+          </m.div>
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6 }} className="max-w-6xl mx-auto w-full relative z-10">
             {/* Header */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -631,7 +469,7 @@ export default function Home() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">Hobby</h4>
                   <div className="flex flex-wrap gap-2">
-                    {['Membangung sebuah website', 'Gitaran', 'Menggambar', 'Main game'].map((interest, i) => (
+                    {['Ngoding', 'Gitaran', 'Menggambar', 'Main game'].map((interest, i) => (
                       <span key={i} className="px-4 py-2 bg-white rounded-lg text-sm font-medium text-gray-700 shadow-sm">
                         {interest}
                       </span>
@@ -643,18 +481,17 @@ export default function Home() {
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900 mb-3">Filosofi Saya</h4>
                   <p className="text-gray-600 italic leading-relaxed">
-                    "Coding bukan untuk membuat kita menjadi keren, tetapi untuk melampiaskan imajinasi, dan membuat pikiran menjadi kritis."
+                    "Coding bukan hanya sekedar membuat aplikasi, tetapi untuk melampiaskan imajinasi."
                   </p>
                   <p>#Dlan12_</p>
                 </div>
               </m.div>
             </div>
-          </div>
+          </m.div>
         </section>
-      )}
 
-      {showSection === 'skill' && (
-        <section className="min-h-screen flex items-center justify-center px-6 bg-gray-200 py-20 relative">
+      {/* Skill Section */}
+        <section id="skill" className="min-h-screen flex items-center justify-center px-6 bg-gray-200 py-20 relative snap-start">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0" style={{
@@ -665,7 +502,7 @@ export default function Home() {
               backgroundSize: '40px 40px'
             }}></div>
           </div>
-          <div className="max-w-6xl mx-auto w-full relative z-10">
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6 }} className="max-w-6xl mx-auto w-full relative z-10">
             {/* Header */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -754,12 +591,12 @@ export default function Home() {
               </div>
             </m.div>
 
-          </div>
+          </m.div>
         </section>
-      )}
+      
 
-      {showSection === 'projects' && (
-        <section className="min-h-screen flex items-center py-20 px-6 bg-gray-200 relative">
+      {/* Projects Section */}
+        <section id="projects" className="min-h-screen flex items-center py-20 px-6 bg-gray-200 relative snap-start">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0" style={{
@@ -771,7 +608,7 @@ export default function Home() {
             }}></div>
           </div>
 
-          <div className="max-w-6xl mx-auto w-full relative z-10">
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6 }} className="max-w-6xl mx-auto w-full relative z-10">
             {/* Header */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -881,12 +718,12 @@ export default function Home() {
                 </m.div>
               )}
             </AnimatePresence>
-          </div>
+          </m.div>
         </section>
-      )}
+      
 
-      {showSection === 'contact' && (
-        <section className="min-h-screen flex items-center py-20 px-6 bg-gray-200 relative">
+      {/* Contact Section */}
+        <section id="contact" className="min-h-screen flex items-center py-20 px-6 bg-gray-200 relative snap-start">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0" style={{
@@ -897,8 +734,7 @@ export default function Home() {
               backgroundSize: '40px 40px'
             }}></div>
           </div>
-
-          <div className="max-w-6xl mx-auto w-full relative z-10">
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6 }} className="max-w-6xl mx-auto w-full relative z-10">
             {/* Header */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
@@ -1159,18 +995,17 @@ export default function Home() {
                 </form>
               </m.div>
             </div>
-          </div>
+          </m.div>
         </section>
-      )}
+      
 
-      {/* Professional Footer - Only show when a section is active */}
-      {showSection && (
+      {/* Professional Footer */}
       <m.footer 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="bg-white border-t border-gray-200 py-12 px-6"
+        className="bg-white border-t border-gray-200 py-10 px-6 min-h-0 h-auto snap-none"
       >
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
@@ -1201,19 +1036,19 @@ export default function Home() {
               <h4 className="font-semibold text-gray-900 mb-4">Tautan Cepat</h4>
               <div className="space-y-2">
                 {[
-                  { name: 'Beranda', action: () => setShowSection(null) },
-                  { name: 'Tentang', action: () => setShowSection('about') },
-                  { name: 'Keahlian', action: () => setShowSection('skill') },
-                  { name: 'Proyek', action: () => setShowSection('projects') },
-                  { name: 'Kontak', action: () => setShowSection('contact') }
+                  { name: 'Beranda', href: '#home' },
+                  { name: 'Tentang', href: '#about' },
+                  { name: 'Keahlian', href: '#skill' },
+                  { name: 'Proyek', href: '#projects' },
+                  { name: 'Kontak', href: '#contact' }
                 ].map((link, index) => (
-                  <button
+                  <a
                     key={index}
-                    onClick={link.action}
+                    href={(link as any).href}
                     className="block text-gray-600 hover:text-gray-900 transition-colors text-sm"
                   >
                     {link.name}
-                  </button>
+                  </a>
                 ))}
               </div>
             </m.div>
@@ -1266,7 +1101,6 @@ export default function Home() {
           </m.div>
         </div>
       </m.footer>
-      )}
 
       {/* Chatbot */}
       <Chatbot />
