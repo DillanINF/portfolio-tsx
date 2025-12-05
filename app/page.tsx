@@ -321,7 +321,7 @@ export default function Home() {
             Pengembang Web
           </h1>
           <p className="text-base md:text-lg text-gray-700 mb-8 leading-relaxed">
-            Pengembang web berusia 17 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
+            Pengembang web berusia 18 tahun dari Bekasi, Indonesia. Siswa di SMK Telekomunikasi Telesandi Bekasi, bersemangat menciptakan solusi digital inovatif dan pengalaman web modern.
           </p>
 
           {/* Integrated stats */}
@@ -403,7 +403,7 @@ export default function Home() {
                     web developer
                   </h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    Saya Dillan Ilkham Nur Fazry, web developer berusia 17 tahun dari Bekasi, Indonesia. 
+                    Saya Dillan Ilkham Nur Fazry, web developer berusia 18 tahun dari Bekasi, Indonesia. 
                     Saat ini belajar di SMK Telekomunikasi Telesandi Bekasi, saya fokus membuat 
                     aplikasi web modern dengan kode yang bersih dan efisien.
                   </p>
@@ -420,7 +420,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Usia</h4>
-                    <p className="text-gray-600">17 Tahun</p>
+                    <p className="text-gray-600">18 Tahun</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-2">Pendidikan</h4>

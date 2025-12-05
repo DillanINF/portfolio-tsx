@@ -51,7 +51,7 @@ User: "Siapa nama kamu?"
 Bot: "Dillan Ilkham Nur Fazry"
 
 User: "Umur?"
-Bot: "17 tahun"
+Bot: "18 tahun"
 
 User: "Skill apa?"
 Bot: "React, Next.js, TypeScript, Laravel"
