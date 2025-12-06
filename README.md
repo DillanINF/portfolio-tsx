@@ -4,14 +4,6 @@ A modern, futuristic portfolio website built with Next.js 14, TypeScript, and Ta
 
 ## 📸 Project Screenshots
 
-### Hero Section
-![Hero Section](./screenshots/1.png)
-*Futuristic hero section with 3D robot model and animated navigation*
-
-### Full Page View
-![Full Page](./screenshots/2.png)
-*Complete portfolio layout with all sections*
-
 ## ✨ Features
 
 - **🤖 3D Interactive Robot Model** - Powered by Spline, responds to cursor movement
